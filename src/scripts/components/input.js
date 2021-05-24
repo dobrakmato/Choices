@@ -88,7 +88,7 @@ export default class Input {
 
   focus() {
     if (!this.isFocussed) {
-      this.element.focus();
+      // this.element.focus();
     }
   }
 

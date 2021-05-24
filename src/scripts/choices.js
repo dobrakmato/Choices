@@ -415,7 +415,7 @@ class Choices {
       this.containerOuter.open(this.dropdown.distanceFromTopWindow);
 
       if (!preventInputFocus && this._canSearch) {
-        this.input.focus();
+        // this.input.focus();
       }
 
       this.passedElement.triggerEvent(EVENTS.showDropdown, {});
@@ -1003,7 +1003,7 @@ class Choices {
 
     // Focus input as without focus, a user cannot do anything with a
     // highlighted item
-    this.input.focus();
+    //this.input.focus();
   }
 
   _handleChoiceAction(activeItems, element) {
