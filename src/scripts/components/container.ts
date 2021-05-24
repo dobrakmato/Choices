@@ -52,6 +52,8 @@ export default class Container {
    * dropdown position
    */
   shouldFlip(dropdownPos: number): boolean {
+    return false;
+
     if (typeof dropdownPos !== 'number') {
       return false;
     }
