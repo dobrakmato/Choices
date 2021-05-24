@@ -722,6 +722,13 @@ class Choices {
     return this;
   }
 
+  clearSelection(): this {
+    this.removeActiveItems(-1);
+    this._addItem({value: '', label: 'Select', placeholder: true});
+
+    return this;
+  }
+
   _render(): void {
     if (this._store.isLoading()) {
       return;
@@ -2257,8 +2264,6 @@ class Choices {
 
           const isSelected = shouldPreselect ? true : choice.selected;
           const isDisabled = choice.disabled;
-
-          console.log(isDisabled, choice);
 
           this._addChoice({
             value,
