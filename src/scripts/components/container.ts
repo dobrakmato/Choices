@@ -103,7 +103,7 @@ export default class Container {
 
   focus(): void {
     if (!this.isFocussed) {
-      this.element.focus();
+      // this.element.focus();
     }
   }
 
