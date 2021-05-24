@@ -1,4 +1,4 @@
-/*! choices.js v9.0.1 | © 2019 Josh Johnson | https://github.com/jshjohnson/Choices#readme */
+/*! choices.js v9.0.1 | © 2021 Josh Johnson | https://github.com/jshjohnson/Choices#readme */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1758,8 +1758,7 @@ function () {
 
       _this.containerOuter.open(_this.dropdown.distanceFromTopWindow);
 
-      if (!preventInputFocus && _this._canSearch) {
-        _this.input.focus();
+      if (!preventInputFocus && _this._canSearch) {// this.input.focus();
       }
 
       _this.passedElement.triggerEvent(constants_1.EVENTS.showDropdown, {});
@@ -2355,8 +2354,7 @@ function () {
       }
     }); // Focus input as without focus, a user cannot do anything with a
     // highlighted item
-
-    this.input.focus();
+    //this.input.focus();
   };
 
   Choices.prototype._handleChoiceAction = function (activeItems, element) {
@@ -3577,7 +3575,7 @@ function () {
   };
 
   Choices.prototype._generatePlaceholderValue = function () {
-    if (this._isSelectElement) {
+    if (this._isSelectElement && this.passedElement.placeholderOption) {
       var placeholderOption = this.passedElement.placeholderOption;
       return placeholderOption ? placeholderOption.text : null;
     }
@@ -4521,6 +4519,8 @@ function () {
 
 
   Container.prototype.shouldFlip = function (dropdownPos) {
+    return false;
+
     if (typeof dropdownPos !== 'number') {
       return false;
     } // If flip is enabled and the dropdown bottom position is
@@ -4570,8 +4570,7 @@ function () {
   };
 
   Container.prototype.focus = function () {
-    if (!this.isFocussed) {
-      this.element.focus();
+    if (!this.isFocussed) {// this.element.focus();
     }
   };
 
@@ -4727,8 +4726,7 @@ function () {
   };
 
   Input.prototype.focus = function () {
-    if (!this.isFocussed) {
-      this.element.focus();
+    if (!this.isFocussed) {// this.element.focus();
     }
   };
 
