@@ -658,7 +658,11 @@ class Choices {
 
   clearSelection() {
     this.removeActiveItems(-1);
-    this._addItem({value: '', label: 'Select', placeholder: true});
+    this._addItem({
+      value: '',
+      label: 'Select',
+      placeholder: true
+    });
 
     return this;
   }
@@ -1010,7 +1014,7 @@ class Choices {
 
     // Focus input as without focus, a user cannot do anything with a
     // highlighted item
-    //this.input.focus();
+    // this.input.focus();
   }
 
   _handleChoiceAction(activeItems, element) {
