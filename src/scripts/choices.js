@@ -656,6 +656,13 @@ class Choices {
     return this;
   }
 
+  clearSelection() {
+    this.removeActiveItems(-1);
+    this._addItem({value: '', label: 'Select', placeholder: true});
+
+    return this;
+  }
+
   clearInput() {
     const shouldSetInputWidth = !this._isSelectOneElement;
     this.input.clear(shouldSetInputWidth);
