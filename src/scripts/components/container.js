@@ -44,14 +44,15 @@ export default class Container {
    * @param {number} dropdownPos
    * @returns {boolean}
    */
+  // prettier-ignore
   shouldFlip(dropdownPos) {
-    return false;
-
-    // prettier-ignore
     if (typeof dropdownPos !== 'number') {
       return false;
     }
 
+    return false;
+
+    /*
     // If flip is enabled and the dropdown bottom position is
     // greater than the window height flip the dropdown.
     let shouldFlip = false;
@@ -63,6 +64,7 @@ export default class Container {
     }
 
     return shouldFlip;
+    */
   }
 
   /**
