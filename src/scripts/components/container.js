@@ -45,6 +45,9 @@ export default class Container {
    * @returns {boolean}
    */
   shouldFlip(dropdownPos) {
+    return false;
+
+    // prettier-ignore
     if (typeof dropdownPos !== 'number') {
       return false;
     }
@@ -59,7 +62,7 @@ export default class Container {
       shouldFlip = true;
     }
 
-    return shouldFlip && false;
+    return shouldFlip;
   }
 
   /**
