@@ -45,6 +45,7 @@ export default class Container {
    * @returns {boolean}
    */
   // prettier-ignore
+  /* eslint-disable */
   shouldFlip(dropdownPos) {
     if (typeof dropdownPos !== 'number') {
       return false;
@@ -66,6 +67,7 @@ export default class Container {
     return shouldFlip;
     */
   }
+  /* eslint-enable */
 
   /**
    * @param {string} activeDescendantID
