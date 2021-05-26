@@ -661,7 +661,7 @@ class Choices {
     this._addItem({
       value: '',
       label: 'Select',
-      placeholder: true
+      placeholder: true,
     });
 
     return this;
