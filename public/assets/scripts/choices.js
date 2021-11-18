@@ -92,7 +92,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -163,17 +163,19 @@ function getKeys(target) {
 	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
 }
 
-// Protects from prototype poisoning and unexpected merging up the prototype chain.
-function propertyIsUnsafe(target, key) {
+function propertyIsOnObject(object, property) {
 	try {
-		return (key in target) // Properties are safe to merge if they don't exist in the target yet,
-			&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
-				&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
-	} catch (unused) {
-		// Counterintuitively, it's safe to merge any property on a target that causes the `in` operator to throw.
-		// This happens when trying to copy an object in the source over a plain string in the target.
+		return property in object
+	} catch(_) {
 		return false
 	}
+}
+
+// Protects from prototype poisoning and unexpected merging up the prototype chain.
+function propertyIsUnsafe(target, key) {
+	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
 }
 
 function mergeObject(target, source, options) {
@@ -188,10 +190,10 @@ function mergeObject(target, source, options) {
 			return
 		}
 
-		if (!options.isMergeableObject(source[key]) || !target[key]) {
-			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
-		} else {
+		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
 			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+		} else {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
 		}
 	});
 	return destination
@@ -235,152 +237,114 @@ module.exports = deepmerge_1;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global, module) {/* harmony import */ var _ponyfill_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* global window */
-
-
-var root;
-
-if (typeof self !== 'undefined') {
-  root = self;
-} else if (typeof window !== 'undefined') {
-  root = window;
-} else if (typeof global !== 'undefined') {
-  root = global;
-} else if (true) {
-  root = module;
-} else {}
-
-var result = Object(_ponyfill_js__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(root);
-/* harmony default export */ __webpack_exports__["a"] = (result);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(6)(module)))
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
- * Fuse.js v3.4.6 - Lightweight fuzzy-search (http://fusejs.io)
+ * Fuse.js v3.6.1 - Lightweight fuzzy-search (http://fusejs.io)
  * 
  * Copyright (c) 2012-2017 Kirollos Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-!function(e,t){ true?module.exports=t():undefined}(this,function(){return function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=1)}([function(e,t){e.exports=function(e){return Array.isArray?Array.isArray(e):"[object Array]"===Object.prototype.toString.call(e)}},function(e,t,n){function r(e){return(r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function o(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}var i=n(2),a=n(8),s=n(0),c=function(){function e(t,n){var r=n.location,o=void 0===r?0:r,i=n.distance,s=void 0===i?100:i,c=n.threshold,h=void 0===c?.6:c,l=n.maxPatternLength,u=void 0===l?32:l,f=n.caseSensitive,d=void 0!==f&&f,v=n.tokenSeparator,p=void 0===v?/ +/g:v,g=n.findAllMatches,y=void 0!==g&&g,m=n.minMatchCharLength,k=void 0===m?1:m,S=n.id,x=void 0===S?null:S,b=n.keys,M=void 0===b?[]:b,_=n.shouldSort,L=void 0===_||_,w=n.getFn,A=void 0===w?a:w,C=n.sortFn,I=void 0===C?function(e,t){return e.score-t.score}:C,O=n.tokenize,j=void 0!==O&&O,P=n.matchAllTokens,F=void 0!==P&&P,T=n.includeMatches,z=void 0!==T&&T,E=n.includeScore,K=void 0!==E&&E,$=n.verbose,J=void 0!==$&&$;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.options={location:o,distance:s,threshold:h,maxPatternLength:u,isCaseSensitive:d,tokenSeparator:p,findAllMatches:y,minMatchCharLength:k,id:x,keys:M,includeMatches:z,includeScore:K,shouldSort:L,getFn:A,sortFn:I,verbose:J,tokenize:j,matchAllTokens:F},this.setCollection(t)}var t,n,c;return t=e,(n=[{key:"setCollection",value:function(e){return this.list=e,e}},{key:"search",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{limit:!1};this._log('---------\nSearch pattern: "'.concat(e,'"'));var n=this._prepareSearchers(e),r=n.tokenSearchers,o=n.fullSearcher,i=this._search(r,o),a=i.weights,s=i.results;return this._computeScore(a,s),this.options.shouldSort&&this._sort(s),t.limit&&"number"==typeof t.limit&&(s=s.slice(0,t.limit)),this._format(s)}},{key:"_prepareSearchers",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",t=[];if(this.options.tokenize)for(var n=e.split(this.options.tokenSeparator),r=0,o=n.length;r<o;r+=1)t.push(new i(n[r],this.options));return{tokenSearchers:t,fullSearcher:new i(e,this.options)}}},{key:"_search",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[],t=arguments.length>1?arguments[1]:void 0,n=this.list,r={},o=[];if("string"==typeof n[0]){for(var i=0,a=n.length;i<a;i+=1)this._analyze({key:"",value:n[i],record:i,index:i},{resultMap:r,results:o,tokenSearchers:e,fullSearcher:t});return{weights:null,results:o}}for(var s={},c=0,h=n.length;c<h;c+=1)for(var l=n[c],u=0,f=this.options.keys.length;u<f;u+=1){var d=this.options.keys[u];if("string"!=typeof d){if(s[d.name]={weight:1-d.weight||1},d.weight<=0||d.weight>1)throw new Error("Key weight has to be > 0 and <= 1");d=d.name}else s[d]={weight:1};this._analyze({key:d,value:this.options.getFn(l,d),record:l,index:c},{resultMap:r,results:o,tokenSearchers:e,fullSearcher:t})}return{weights:s,results:o}}},{key:"_analyze",value:function(e,t){var n=e.key,r=e.arrayIndex,o=void 0===r?-1:r,i=e.value,a=e.record,c=e.index,h=t.tokenSearchers,l=void 0===h?[]:h,u=t.fullSearcher,f=void 0===u?[]:u,d=t.resultMap,v=void 0===d?{}:d,p=t.results,g=void 0===p?[]:p;if(null!=i){var y=!1,m=-1,k=0;if("string"==typeof i){this._log("\nKey: ".concat(""===n?"-":n));var S=f.search(i);if(this._log('Full text: "'.concat(i,'", score: ').concat(S.score)),this.options.tokenize){for(var x=i.split(this.options.tokenSeparator),b=[],M=0;M<l.length;M+=1){var _=l[M];this._log('\nPattern: "'.concat(_.pattern,'"'));for(var L=!1,w=0;w<x.length;w+=1){var A=x[w],C=_.search(A),I={};C.isMatch?(I[A]=C.score,y=!0,L=!0,b.push(C.score)):(I[A]=1,this.options.matchAllTokens||b.push(1)),this._log('Token: "'.concat(A,'", score: ').concat(I[A]))}L&&(k+=1)}m=b[0];for(var O=b.length,j=1;j<O;j+=1)m+=b[j];m/=O,this._log("Token score average:",m)}var P=S.score;m>-1&&(P=(P+m)/2),this._log("Score average:",P);var F=!this.options.tokenize||!this.options.matchAllTokens||k>=l.length;if(this._log("\nCheck Matches: ".concat(F)),(y||S.isMatch)&&F){var T=v[c];T?T.output.push({key:n,arrayIndex:o,value:i,score:P,matchedIndices:S.matchedIndices}):(v[c]={item:a,output:[{key:n,arrayIndex:o,value:i,score:P,matchedIndices:S.matchedIndices}]},g.push(v[c]))}}else if(s(i))for(var z=0,E=i.length;z<E;z+=1)this._analyze({key:n,arrayIndex:z,value:i[z],record:a,index:c},{resultMap:v,results:g,tokenSearchers:l,fullSearcher:f})}}},{key:"_computeScore",value:function(e,t){this._log("\n\nComputing score:\n");for(var n=0,r=t.length;n<r;n+=1){for(var o=t[n].output,i=o.length,a=1,s=1,c=0;c<i;c+=1){var h=e?e[o[c].key].weight:1,l=(1===h?o[c].score:o[c].score||.001)*h;1!==h?s=Math.min(s,l):(o[c].nScore=l,a*=l)}t[n].score=1===s?a:s,this._log(t[n])}}},{key:"_sort",value:function(e){this._log("\n\nSorting...."),e.sort(this.options.sortFn)}},{key:"_format",value:function(e){var t=[];if(this.options.verbose){var n=[];this._log("\n\nOutput:\n\n",JSON.stringify(e,function(e,t){if("object"===r(t)&&null!==t){if(-1!==n.indexOf(t))return;n.push(t)}return t})),n=null}var o=[];this.options.includeMatches&&o.push(function(e,t){var n=e.output;t.matches=[];for(var r=0,o=n.length;r<o;r+=1){var i=n[r];if(0!==i.matchedIndices.length){var a={indices:i.matchedIndices,value:i.value};i.key&&(a.key=i.key),i.hasOwnProperty("arrayIndex")&&i.arrayIndex>-1&&(a.arrayIndex=i.arrayIndex),t.matches.push(a)}}}),this.options.includeScore&&o.push(function(e,t){t.score=e.score});for(var i=0,a=e.length;i<a;i+=1){var s=e[i];if(this.options.id&&(s.item=this.options.getFn(s.item,this.options.id)[0]),o.length){for(var c={item:s.item},h=0,l=o.length;h<l;h+=1)o[h](s,c);t.push(c)}else t.push(s.item)}return t}},{key:"_log",value:function(){var e;this.options.verbose&&(e=console).log.apply(e,arguments)}}])&&o(t.prototype,n),c&&o(t,c),e}();e.exports=c},function(e,t,n){function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}var o=n(3),i=n(4),a=n(7),s=function(){function e(t,n){var r=n.location,o=void 0===r?0:r,i=n.distance,s=void 0===i?100:i,c=n.threshold,h=void 0===c?.6:c,l=n.maxPatternLength,u=void 0===l?32:l,f=n.isCaseSensitive,d=void 0!==f&&f,v=n.tokenSeparator,p=void 0===v?/ +/g:v,g=n.findAllMatches,y=void 0!==g&&g,m=n.minMatchCharLength,k=void 0===m?1:m;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.options={location:o,distance:s,threshold:h,maxPatternLength:u,isCaseSensitive:d,tokenSeparator:p,findAllMatches:y,minMatchCharLength:k},this.pattern=this.options.isCaseSensitive?t:t.toLowerCase(),this.pattern.length<=u&&(this.patternAlphabet=a(this.pattern))}var t,n,s;return t=e,(n=[{key:"search",value:function(e){if(this.options.isCaseSensitive||(e=e.toLowerCase()),this.pattern===e)return{isMatch:!0,score:0,matchedIndices:[[0,e.length-1]]};var t=this.options,n=t.maxPatternLength,r=t.tokenSeparator;if(this.pattern.length>n)return o(e,this.pattern,r);var a=this.options,s=a.location,c=a.distance,h=a.threshold,l=a.findAllMatches,u=a.minMatchCharLength;return i(e,this.pattern,this.patternAlphabet,{location:s,distance:c,threshold:h,findAllMatches:l,minMatchCharLength:u})}}])&&r(t.prototype,n),s&&r(t,s),e}();e.exports=s},function(e,t){var n=/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g;e.exports=function(e,t){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:/ +/g,o=new RegExp(t.replace(n,"\\$&").replace(r,"|")),i=e.match(o),a=!!i,s=[];if(a)for(var c=0,h=i.length;c<h;c+=1){var l=i[c];s.push([e.indexOf(l),l.length-1])}return{score:a?.5:1,isMatch:a,matchedIndices:s}}},function(e,t,n){var r=n(5),o=n(6);e.exports=function(e,t,n,i){for(var a=i.location,s=void 0===a?0:a,c=i.distance,h=void 0===c?100:c,l=i.threshold,u=void 0===l?.6:l,f=i.findAllMatches,d=void 0!==f&&f,v=i.minMatchCharLength,p=void 0===v?1:v,g=s,y=e.length,m=u,k=e.indexOf(t,g),S=t.length,x=[],b=0;b<y;b+=1)x[b]=0;if(-1!==k){var M=r(t,{errors:0,currentLocation:k,expectedLocation:g,distance:h});if(m=Math.min(M,m),-1!==(k=e.lastIndexOf(t,g+S))){var _=r(t,{errors:0,currentLocation:k,expectedLocation:g,distance:h});m=Math.min(_,m)}}k=-1;for(var L=[],w=1,A=S+y,C=1<<(S<=31?S-1:30),I=0;I<S;I+=1){for(var O=0,j=A;O<j;){r(t,{errors:I,currentLocation:g+j,expectedLocation:g,distance:h})<=m?O=j:A=j,j=Math.floor((A-O)/2+O)}A=j;var P=Math.max(1,g-j+1),F=d?y:Math.min(g+j,y)+S,T=Array(F+2);T[F+1]=(1<<I)-1;for(var z=F;z>=P;z-=1){var E=z-1,K=n[e.charAt(E)];if(K&&(x[E]=1),T[z]=(T[z+1]<<1|1)&K,0!==I&&(T[z]|=(L[z+1]|L[z])<<1|1|L[z+1]),T[z]&C&&(w=r(t,{errors:I,currentLocation:E,expectedLocation:g,distance:h}))<=m){if(m=w,(k=E)<=g)break;P=Math.max(1,2*g-k)}}if(r(t,{errors:I+1,currentLocation:g,expectedLocation:g,distance:h})>m)break;L=T}return{isMatch:k>=0,score:0===w?.001:w,matchedIndices:o(x,p)}}},function(e,t){e.exports=function(e,t){var n=t.errors,r=void 0===n?0:n,o=t.currentLocation,i=void 0===o?0:o,a=t.expectedLocation,s=void 0===a?0:a,c=t.distance,h=void 0===c?100:c,l=r/e.length,u=Math.abs(s-i);return h?l+u/h:u?1:l}},function(e,t){e.exports=function(){for(var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[],t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:1,n=[],r=-1,o=-1,i=0,a=e.length;i<a;i+=1){var s=e[i];s&&-1===r?r=i:s||-1===r||((o=i-1)-r+1>=t&&n.push([r,o]),r=-1)}return e[i-1]&&i-r>=t&&n.push([r,i-1]),n}},function(e,t){e.exports=function(e){for(var t={},n=e.length,r=0;r<n;r+=1)t[e.charAt(r)]=0;for(var o=0;o<n;o+=1)t[e.charAt(o)]|=1<<n-o-1;return t}},function(e,t,n){var r=n(0);e.exports=function(e,t){return function e(t,n,o){if(n){var i=n.indexOf("."),a=n,s=null;-1!==i&&(a=n.slice(0,i),s=n.slice(i+1));var c=t[a];if(null!=c)if(s||"string"!=typeof c&&"number"!=typeof c)if(r(c))for(var h=0,l=c.length;h<l;h+=1)e(c[h],s,o);else s&&e(c,s,o);else o.push(c.toString())}else o.push(t);return o}(e,t,[])}}])});
+!function(e,t){ true?module.exports=t():undefined}(this,function(){return function(e){var t={};function r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}return r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=0)}([function(e,t,r){function n(e){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function o(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}var i=r(1),a=r(7),s=a.get,c=(a.deepValue,a.isArray),h=function(){function e(t,r){var n=r.location,o=void 0===n?0:n,i=r.distance,a=void 0===i?100:i,c=r.threshold,h=void 0===c?.6:c,l=r.maxPatternLength,u=void 0===l?32:l,f=r.caseSensitive,v=void 0!==f&&f,p=r.tokenSeparator,d=void 0===p?/ +/g:p,g=r.findAllMatches,y=void 0!==g&&g,m=r.minMatchCharLength,k=void 0===m?1:m,b=r.id,S=void 0===b?null:b,x=r.keys,M=void 0===x?[]:x,_=r.shouldSort,w=void 0===_||_,L=r.getFn,A=void 0===L?s:L,O=r.sortFn,C=void 0===O?function(e,t){return e.score-t.score}:O,j=r.tokenize,P=void 0!==j&&j,I=r.matchAllTokens,F=void 0!==I&&I,T=r.includeMatches,N=void 0!==T&&T,z=r.includeScore,E=void 0!==z&&z,W=r.verbose,K=void 0!==W&&W;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.options={location:o,distance:a,threshold:h,maxPatternLength:u,isCaseSensitive:v,tokenSeparator:d,findAllMatches:y,minMatchCharLength:k,id:S,keys:M,includeMatches:N,includeScore:E,shouldSort:w,getFn:A,sortFn:C,verbose:K,tokenize:P,matchAllTokens:F},this.setCollection(t),this._processKeys(M)}var t,r,a;return t=e,(r=[{key:"setCollection",value:function(e){return this.list=e,e}},{key:"_processKeys",value:function(e){if(this._keyWeights={},this._keyNames=[],e.length&&"string"==typeof e[0])for(var t=0,r=e.length;t<r;t+=1){var n=e[t];this._keyWeights[n]=1,this._keyNames.push(n)}else{for(var o=null,i=null,a=0,s=0,c=e.length;s<c;s+=1){var h=e[s];if(!h.hasOwnProperty("name"))throw new Error('Missing "name" property in key object');var l=h.name;if(this._keyNames.push(l),!h.hasOwnProperty("weight"))throw new Error('Missing "weight" property in key object');var u=h.weight;if(u<0||u>1)throw new Error('"weight" property in key must bein the range of [0, 1)');i=null==i?u:Math.max(i,u),o=null==o?u:Math.min(o,u),this._keyWeights[l]=u,a+=u}if(a>1)throw new Error("Total of weights cannot exceed 1")}}},{key:"search",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{limit:!1};this._log('---------\nSearch pattern: "'.concat(e,'"'));var r=this._prepareSearchers(e),n=r.tokenSearchers,o=r.fullSearcher,i=this._search(n,o);return this._computeScore(i),this.options.shouldSort&&this._sort(i),t.limit&&"number"==typeof t.limit&&(i=i.slice(0,t.limit)),this._format(i)}},{key:"_prepareSearchers",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",t=[];if(this.options.tokenize)for(var r=e.split(this.options.tokenSeparator),n=0,o=r.length;n<o;n+=1)t.push(new i(r[n],this.options));return{tokenSearchers:t,fullSearcher:new i(e,this.options)}}},{key:"_search",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[],t=arguments.length>1?arguments[1]:void 0,r=this.list,n={},o=[];if("string"==typeof r[0]){for(var i=0,a=r.length;i<a;i+=1)this._analyze({key:"",value:r[i],record:i,index:i},{resultMap:n,results:o,tokenSearchers:e,fullSearcher:t});return o}for(var s=0,c=r.length;s<c;s+=1)for(var h=r[s],l=0,u=this._keyNames.length;l<u;l+=1){var f=this._keyNames[l];this._analyze({key:f,value:this.options.getFn(h,f),record:h,index:s},{resultMap:n,results:o,tokenSearchers:e,fullSearcher:t})}return o}},{key:"_analyze",value:function(e,t){var r=this,n=e.key,o=e.arrayIndex,i=void 0===o?-1:o,a=e.value,s=e.record,h=e.index,l=t.tokenSearchers,u=void 0===l?[]:l,f=t.fullSearcher,v=t.resultMap,p=void 0===v?{}:v,d=t.results,g=void 0===d?[]:d;!function e(t,o,i,a){if(null!=o)if("string"==typeof o){var s=!1,h=-1,l=0;r._log("\nKey: ".concat(""===n?"--":n));var v=f.search(o);if(r._log('Full text: "'.concat(o,'", score: ').concat(v.score)),r.options.tokenize){for(var d=o.split(r.options.tokenSeparator),y=d.length,m=[],k=0,b=u.length;k<b;k+=1){var S=u[k];r._log('\nPattern: "'.concat(S.pattern,'"'));for(var x=!1,M=0;M<y;M+=1){var _=d[M],w=S.search(_),L={};w.isMatch?(L[_]=w.score,s=!0,x=!0,m.push(w.score)):(L[_]=1,r.options.matchAllTokens||m.push(1)),r._log('Token: "'.concat(_,'", score: ').concat(L[_]))}x&&(l+=1)}h=m[0];for(var A=m.length,O=1;O<A;O+=1)h+=m[O];h/=A,r._log("Token score average:",h)}var C=v.score;h>-1&&(C=(C+h)/2),r._log("Score average:",C);var j=!r.options.tokenize||!r.options.matchAllTokens||l>=u.length;if(r._log("\nCheck Matches: ".concat(j)),(s||v.isMatch)&&j){var P={key:n,arrayIndex:t,value:o,score:C};r.options.includeMatches&&(P.matchedIndices=v.matchedIndices);var I=p[a];I?I.output.push(P):(p[a]={item:i,output:[P]},g.push(p[a]))}}else if(c(o))for(var F=0,T=o.length;F<T;F+=1)e(F,o[F],i,a)}(i,a,s,h)}},{key:"_computeScore",value:function(e){this._log("\n\nComputing score:\n");for(var t=this._keyWeights,r=!!Object.keys(t).length,n=0,o=e.length;n<o;n+=1){for(var i=e[n],a=i.output,s=a.length,c=1,h=0;h<s;h+=1){var l=a[h],u=l.key,f=r?t[u]:1,v=0===l.score&&t&&t[u]>0?Number.EPSILON:l.score;c*=Math.pow(v,f)}i.score=c,this._log(i)}}},{key:"_sort",value:function(e){this._log("\n\nSorting...."),e.sort(this.options.sortFn)}},{key:"_format",value:function(e){var t=[];if(this.options.verbose){var r=[];this._log("\n\nOutput:\n\n",JSON.stringify(e,function(e,t){if("object"===n(t)&&null!==t){if(-1!==r.indexOf(t))return;r.push(t)}return t},2)),r=null}var o=[];this.options.includeMatches&&o.push(function(e,t){var r=e.output;t.matches=[];for(var n=0,o=r.length;n<o;n+=1){var i=r[n];if(0!==i.matchedIndices.length){var a={indices:i.matchedIndices,value:i.value};i.key&&(a.key=i.key),i.hasOwnProperty("arrayIndex")&&i.arrayIndex>-1&&(a.arrayIndex=i.arrayIndex),t.matches.push(a)}}}),this.options.includeScore&&o.push(function(e,t){t.score=e.score});for(var i=0,a=e.length;i<a;i+=1){var s=e[i];if(this.options.id&&(s.item=this.options.getFn(s.item,this.options.id)[0]),o.length){for(var c={item:s.item},h=0,l=o.length;h<l;h+=1)o[h](s,c);t.push(c)}else t.push(s.item)}return t}},{key:"_log",value:function(){var e;this.options.verbose&&(e=console).log.apply(e,arguments)}}])&&o(t.prototype,r),a&&o(t,a),e}();e.exports=h},function(e,t,r){function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}var o=r(2),i=r(3),a=r(6),s=function(){function e(t,r){var n=r.location,o=void 0===n?0:n,i=r.distance,s=void 0===i?100:i,c=r.threshold,h=void 0===c?.6:c,l=r.maxPatternLength,u=void 0===l?32:l,f=r.isCaseSensitive,v=void 0!==f&&f,p=r.tokenSeparator,d=void 0===p?/ +/g:p,g=r.findAllMatches,y=void 0!==g&&g,m=r.minMatchCharLength,k=void 0===m?1:m,b=r.includeMatches,S=void 0!==b&&b;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.options={location:o,distance:s,threshold:h,maxPatternLength:u,isCaseSensitive:v,tokenSeparator:d,findAllMatches:y,includeMatches:S,minMatchCharLength:k},this.pattern=v?t:t.toLowerCase(),this.pattern.length<=u&&(this.patternAlphabet=a(this.pattern))}var t,r,s;return t=e,(r=[{key:"search",value:function(e){var t=this.options,r=t.isCaseSensitive,n=t.includeMatches;if(r||(e=e.toLowerCase()),this.pattern===e){var a={isMatch:!0,score:0};return n&&(a.matchedIndices=[[0,e.length-1]]),a}var s=this.options,c=s.maxPatternLength,h=s.tokenSeparator;if(this.pattern.length>c)return o(e,this.pattern,h);var l=this.options,u=l.location,f=l.distance,v=l.threshold,p=l.findAllMatches,d=l.minMatchCharLength;return i(e,this.pattern,this.patternAlphabet,{location:u,distance:f,threshold:v,findAllMatches:p,minMatchCharLength:d,includeMatches:n})}}])&&n(t.prototype,r),s&&n(t,s),e}();e.exports=s},function(e,t){var r=/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g;e.exports=function(e,t){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:/ +/g,o=new RegExp(t.replace(r,"\\$&").replace(n,"|")),i=e.match(o),a=!!i,s=[];if(a)for(var c=0,h=i.length;c<h;c+=1){var l=i[c];s.push([e.indexOf(l),l.length-1])}return{score:a?.5:1,isMatch:a,matchedIndices:s}}},function(e,t,r){var n=r(4),o=r(5);e.exports=function(e,t,r,i){for(var a=i.location,s=void 0===a?0:a,c=i.distance,h=void 0===c?100:c,l=i.threshold,u=void 0===l?.6:l,f=i.findAllMatches,v=void 0!==f&&f,p=i.minMatchCharLength,d=void 0===p?1:p,g=i.includeMatches,y=void 0!==g&&g,m=s,k=e.length,b=u,S=e.indexOf(t,m),x=t.length,M=[],_=0;_<k;_+=1)M[_]=0;if(-1!==S){var w=n(t,{errors:0,currentLocation:S,expectedLocation:m,distance:h});if(b=Math.min(w,b),-1!==(S=e.lastIndexOf(t,m+x))){var L=n(t,{errors:0,currentLocation:S,expectedLocation:m,distance:h});b=Math.min(L,b)}}S=-1;for(var A=[],O=1,C=x+k,j=1<<(x<=31?x-1:30),P=0;P<x;P+=1){for(var I=0,F=C;I<F;){n(t,{errors:P,currentLocation:m+F,expectedLocation:m,distance:h})<=b?I=F:C=F,F=Math.floor((C-I)/2+I)}C=F;var T=Math.max(1,m-F+1),N=v?k:Math.min(m+F,k)+x,z=Array(N+2);z[N+1]=(1<<P)-1;for(var E=N;E>=T;E-=1){var W=E-1,K=r[e.charAt(W)];if(K&&(M[W]=1),z[E]=(z[E+1]<<1|1)&K,0!==P&&(z[E]|=(A[E+1]|A[E])<<1|1|A[E+1]),z[E]&j&&(O=n(t,{errors:P,currentLocation:W,expectedLocation:m,distance:h}))<=b){if(b=O,(S=W)<=m)break;T=Math.max(1,2*m-S)}}if(n(t,{errors:P+1,currentLocation:m,expectedLocation:m,distance:h})>b)break;A=z}var $={isMatch:S>=0,score:0===O?.001:O};return y&&($.matchedIndices=o(M,d)),$}},function(e,t){e.exports=function(e,t){var r=t.errors,n=void 0===r?0:r,o=t.currentLocation,i=void 0===o?0:o,a=t.expectedLocation,s=void 0===a?0:a,c=t.distance,h=void 0===c?100:c,l=n/e.length,u=Math.abs(s-i);return h?l+u/h:u?1:l}},function(e,t){e.exports=function(){for(var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[],t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:1,r=[],n=-1,o=-1,i=0,a=e.length;i<a;i+=1){var s=e[i];s&&-1===n?n=i:s||-1===n||((o=i-1)-n+1>=t&&r.push([n,o]),n=-1)}return e[i-1]&&i-n>=t&&r.push([n,i-1]),r}},function(e,t){e.exports=function(e){for(var t={},r=e.length,n=0;n<r;n+=1)t[e.charAt(n)]=0;for(var o=0;o<r;o+=1)t[e.charAt(o)]|=1<<r-o-1;return t}},function(e,t){var r=function(e){return Array.isArray?Array.isArray(e):"[object Array]"===Object.prototype.toString.call(e)},n=function(e){return null==e?"":function(e){if("string"==typeof e)return e;var t=e+"";return"0"==t&&1/e==-1/0?"-0":t}(e)},o=function(e){return"string"==typeof e},i=function(e){return"number"==typeof e};e.exports={get:function(e,t){var a=[];return function e(t,s){if(s){var c=s.indexOf("."),h=s,l=null;-1!==c&&(h=s.slice(0,c),l=s.slice(c+1));var u=t[h];if(null!=u)if(l||!o(u)&&!i(u))if(r(u))for(var f=0,v=u.length;f<v;f+=1)e(u[f],l);else l&&e(u,l);else a.push(n(u))}else a.push(t)}(e,t),a},isArray:r,isString:o,isNum:i,toString:n}}])});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(3);
+
 
 /***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return symbolObservablePonyfill; });
-function symbolObservablePonyfill(root) {
-	var result;
-	var Symbol = root.Symbol;
-
-	if (typeof Symbol === 'function') {
-		if (Symbol.observable) {
-			result = Symbol.observable;
-		} else {
-			result = Symbol('observable');
-			Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-};
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(7);
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = function(originalModule) {
-	if (!originalModule.webpackPolyfill) {
-		var module = Object.create(originalModule);
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		Object.defineProperty(module, "exports", {
-			enumerable: true
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/fuse.js/dist/fuse.js
-var dist_fuse = __webpack_require__(2);
+var dist_fuse = __webpack_require__(1);
 var fuse_default = /*#__PURE__*/__webpack_require__.n(dist_fuse);
 
 // EXTERNAL MODULE: ./node_modules/deepmerge/dist/cjs.js
 var cjs = __webpack_require__(0);
 var cjs_default = /*#__PURE__*/__webpack_require__.n(cjs);
 
-// EXTERNAL MODULE: ./node_modules/symbol-observable/es/index.js
-var es = __webpack_require__(1);
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
 
+  return obj;
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectSpread2.js
+
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
 // CONCATENATED MODULE: ./node_modules/redux/es/redux.js
 
+
+/**
+ * Adapted from React: https://github.com/facebook/react/blob/master/packages/shared/formatProdErrorMessage.js
+ *
+ * Do not require this module directly! Use normal throw error calls. These messages will be replaced with error codes
+ * during build.
+ * @param {number} code
+ */
+function formatProdErrorMessage(code) {
+  return "Minified Redux error #" + code + "; visit https://redux.js.org/Errors?code=" + code + " for the full message or " + 'use the non-minified dev environment for full errors. ';
+}
+
+// Inlined version of the `symbol-observable` polyfill
+var $$observable = (function () {
+  return typeof Symbol === 'function' && Symbol.observable || '@@observable';
+})();
 
 /**
  * These are private action types reserved by Redux.
@@ -415,6 +379,63 @@ function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === proto;
 }
 
+// Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
+function miniKindOf(val) {
+  if (val === void 0) return 'undefined';
+  if (val === null) return 'null';
+  var type = typeof val;
+
+  switch (type) {
+    case 'boolean':
+    case 'string':
+    case 'number':
+    case 'symbol':
+    case 'function':
+      {
+        return type;
+      }
+  }
+
+  if (Array.isArray(val)) return 'array';
+  if (isDate(val)) return 'date';
+  if (isError(val)) return 'error';
+  var constructorName = ctorName(val);
+
+  switch (constructorName) {
+    case 'Symbol':
+    case 'Promise':
+    case 'WeakMap':
+    case 'WeakSet':
+    case 'Map':
+    case 'Set':
+      return constructorName;
+  } // other
+
+
+  return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+}
+
+function ctorName(val) {
+  return typeof val.constructor === 'function' ? val.constructor.name : null;
+}
+
+function isError(val) {
+  return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
+}
+
+function isDate(val) {
+  if (val instanceof Date) return true;
+  return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
+}
+
+function kindOf(val) {
+  var typeOfVal = typeof val;
+
+  if (false) {}
+
+  return typeOfVal;
+}
+
 /**
  * Creates a Redux store that holds the state tree.
  * The only way to change the data in the store is to call `dispatch()` on it.
@@ -441,11 +462,11 @@ function isPlainObject(obj) {
  * and subscribe to changes.
  */
 
-function createStore(reducer, preloadedState, enhancer) {
+function redux_createStore(reducer, preloadedState, enhancer) {
   var _ref2;
 
   if (typeof preloadedState === 'function' && typeof enhancer === 'function' || typeof enhancer === 'function' && typeof arguments[3] === 'function') {
-    throw new Error('It looks like you are passing several store enhancers to ' + 'createStore(). This is not supported. Instead, compose them ' + 'together to a single function.');
+    throw new Error( true ? formatProdErrorMessage(0) : undefined);
   }
 
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -455,14 +476,14 @@ function createStore(reducer, preloadedState, enhancer) {
 
   if (typeof enhancer !== 'undefined') {
     if (typeof enhancer !== 'function') {
-      throw new Error('Expected the enhancer to be a function.');
+      throw new Error( true ? formatProdErrorMessage(1) : undefined);
     }
 
-    return enhancer(createStore)(reducer, preloadedState);
+    return enhancer(redux_createStore)(reducer, preloadedState);
   }
 
   if (typeof reducer !== 'function') {
-    throw new Error('Expected the reducer to be a function.');
+    throw new Error( true ? formatProdErrorMessage(2) : undefined);
   }
 
   var currentReducer = reducer;
@@ -492,7 +513,7 @@ function createStore(reducer, preloadedState, enhancer) {
 
   function getState() {
     if (isDispatching) {
-      throw new Error('You may not call store.getState() while the reducer is executing. ' + 'The reducer has already received the state as an argument. ' + 'Pass it down from the top reducer instead of reading it from the store.');
+      throw new Error( true ? formatProdErrorMessage(3) : undefined);
     }
 
     return currentState;
@@ -524,11 +545,11 @@ function createStore(reducer, preloadedState, enhancer) {
 
   function subscribe(listener) {
     if (typeof listener !== 'function') {
-      throw new Error('Expected the listener to be a function.');
+      throw new Error( true ? formatProdErrorMessage(4) : undefined);
     }
 
     if (isDispatching) {
-      throw new Error('You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+      throw new Error( true ? formatProdErrorMessage(5) : undefined);
     }
 
     var isSubscribed = true;
@@ -540,13 +561,14 @@ function createStore(reducer, preloadedState, enhancer) {
       }
 
       if (isDispatching) {
-        throw new Error('You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+        throw new Error( true ? formatProdErrorMessage(6) : undefined);
       }
 
       isSubscribed = false;
       ensureCanMutateNextListeners();
       var index = nextListeners.indexOf(listener);
       nextListeners.splice(index, 1);
+      currentListeners = null;
     };
   }
   /**
@@ -578,15 +600,15 @@ function createStore(reducer, preloadedState, enhancer) {
 
   function dispatch(action) {
     if (!isPlainObject(action)) {
-      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+      throw new Error( true ? formatProdErrorMessage(7) : undefined);
     }
 
     if (typeof action.type === 'undefined') {
-      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+      throw new Error( true ? formatProdErrorMessage(8) : undefined);
     }
 
     if (isDispatching) {
-      throw new Error('Reducers may not dispatch actions.');
+      throw new Error( true ? formatProdErrorMessage(9) : undefined);
     }
 
     try {
@@ -619,7 +641,7 @@ function createStore(reducer, preloadedState, enhancer) {
 
   function replaceReducer(nextReducer) {
     if (typeof nextReducer !== 'function') {
-      throw new Error('Expected the nextReducer to be a function.');
+      throw new Error( true ? formatProdErrorMessage(10) : undefined);
     }
 
     currentReducer = nextReducer; // This action has a similiar effect to ActionTypes.INIT.
@@ -654,7 +676,7 @@ function createStore(reducer, preloadedState, enhancer) {
        */
       subscribe: function subscribe(observer) {
         if (typeof observer !== 'object' || observer === null) {
-          throw new TypeError('Expected the observer to be an object.');
+          throw new Error( true ? formatProdErrorMessage(11) : undefined);
         }
 
         function observeState() {
@@ -669,7 +691,7 @@ function createStore(reducer, preloadedState, enhancer) {
           unsubscribe: unsubscribe
         };
       }
-    }, _ref[es["a" /* default */]] = function () {
+    }, _ref[$$observable] = function () {
       return this;
     }, _ref;
   } // When a store is created, an "INIT" action is dispatched so that every
@@ -685,7 +707,7 @@ function createStore(reducer, preloadedState, enhancer) {
     subscribe: subscribe,
     getState: getState,
     replaceReducer: replaceReducer
-  }, _ref2[es["a" /* default */]] = observable, _ref2;
+  }, _ref2[$$observable] = observable, _ref2;
 }
 
 /**
@@ -711,12 +733,6 @@ function warning(message) {
 
 }
 
-function getUndefinedStateErrorMessage(key, action) {
-  var actionType = action && action.type;
-  var actionDescription = actionType && "action \"" + String(actionType) + "\"" || 'an action';
-  return "Given " + actionDescription + ", reducer \"" + key + "\" returned undefined. " + "To ignore an action, you must explicitly return the previous state. " + "If you want this reducer to hold no value, you can return null instead of undefined.";
-}
-
 function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
   var reducerKeys = Object.keys(reducers);
   var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
@@ -726,7 +742,7 @@ function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, une
   }
 
   if (!isPlainObject(inputState)) {
-    return "The " + argumentName + " has unexpected type of \"" + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
+    return "The " + argumentName + " has unexpected type of \"" + kindOf(inputState) + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
   }
 
   var unexpectedKeys = Object.keys(inputState).filter(function (key) {
@@ -750,13 +766,13 @@ function assertReducerShape(reducers) {
     });
 
     if (typeof initialState === 'undefined') {
-      throw new Error("Reducer \"" + key + "\" returned undefined during initialization. " + "If the state passed to the reducer is undefined, you must " + "explicitly return the initial state. The initial state may " + "not be undefined. If you don't want to set a value for this reducer, " + "you can use null instead of undefined.");
+      throw new Error( true ? formatProdErrorMessage(12) : undefined);
     }
 
     if (typeof reducer(undefined, {
       type: ActionTypes.PROBE_UNKNOWN_ACTION()
     }) === 'undefined') {
-      throw new Error("Reducer \"" + key + "\" returned undefined when probed with a random type. " + ("Don't try to handle " + ActionTypes.INIT + " or other actions in \"redux/*\" ") + "namespace. They are considered private. Instead, you must return the " + "current state for any unknown actions, unless it is undefined, " + "in which case you must return the initial state, regardless of the " + "action type. The initial state may not be undefined, but can be null.");
+      throw new Error( true ? formatProdErrorMessage(13) : undefined);
     }
   });
 }
@@ -828,14 +844,15 @@ function combineReducers(reducers) {
       var nextStateForKey = reducer(previousStateForKey, action);
 
       if (typeof nextStateForKey === 'undefined') {
-        var errorMessage = getUndefinedStateErrorMessage(_key, action);
-        throw new Error(errorMessage);
+        var actionType = action && action.type;
+        throw new Error( true ? formatProdErrorMessage(14) : undefined);
       }
 
       nextState[_key] = nextStateForKey;
       hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
     }
 
+    hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
     return hasChanged ? nextState : state;
   };
 }
@@ -874,7 +891,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
 
   if (typeof actionCreators !== 'object' || actionCreators === null) {
-    throw new Error("bindActionCreators expected an object or a function, instead received " + (actionCreators === null ? 'null' : typeof actionCreators) + ". " + "Did you write \"import ActionCreators from\" instead of \"import * as ActionCreators from\"?");
+    throw new Error( true ? formatProdErrorMessage(16) : undefined);
   }
 
   var boundActionCreators = {};
@@ -888,54 +905,6 @@ function bindActionCreators(actionCreators, dispatch) {
   }
 
   return boundActionCreators;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    keys.push.apply(keys, Object.getOwnPropertySymbols(object));
-  }
-
-  if (enumerableOnly) keys = keys.filter(function (sym) {
-    return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-  });
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(source, true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(source).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
 }
 
 /**
@@ -997,7 +966,7 @@ function applyMiddleware() {
       var store = createStore.apply(void 0, arguments);
 
       var _dispatch = function dispatch() {
-        throw new Error('Dispatching while constructing your middleware is not allowed. ' + 'Other middleware would not be applied to this dispatch.');
+        throw new Error( true ? formatProdErrorMessage(15) : undefined);
       };
 
       var middlewareAPI = {
@@ -1010,7 +979,7 @@ function applyMiddleware() {
         return middleware(middlewareAPI);
       });
       _dispatch = compose.apply(void 0, chain)(store.dispatch);
-      return _objectSpread2({}, store, {
+      return _objectSpread2(_objectSpread2({}, store), {}, {
         dispatch: _dispatch
       });
     };
@@ -1029,7 +998,7 @@ if (false) {}
 
 
 // CONCATENATED MODULE: ./src/scripts/reducers/items.js
-var defaultState = [];
+const defaultState = [];
 function items_items(state, action) {
   if (state === void 0) {
     state = defaultState;
@@ -1039,7 +1008,7 @@ function items_items(state, action) {
     case 'ADD_ITEM':
       {
         // Add object to items array
-        var newState = [].concat(state, [{
+        const newState = [...state, {
           id: action.id,
           choiceId: action.choiceId,
           groupId: action.groupId,
@@ -1050,9 +1019,9 @@ function items_items(state, action) {
           customProperties: action.customProperties,
           placeholder: action.placeholder || false,
           keyCode: null
-        }]);
-        return newState.map(function (obj) {
-          var item = obj;
+        }];
+        return newState.map(obj => {
+          const item = obj;
           item.highlighted = false;
           return item;
         });
@@ -1061,8 +1030,8 @@ function items_items(state, action) {
     case 'REMOVE_ITEM':
       {
         // Set item to inactive
-        return state.map(function (obj) {
-          var item = obj;
+        return state.map(obj => {
+          const item = obj;
 
           if (item.id === action.id) {
             item.active = false;
@@ -1074,8 +1043,8 @@ function items_items(state, action) {
 
     case 'HIGHLIGHT_ITEM':
       {
-        return state.map(function (obj) {
-          var item = obj;
+        return state.map(obj => {
+          const item = obj;
 
           if (item.id === action.id) {
             item.highlighted = action.highlighted;
@@ -1092,7 +1061,7 @@ function items_items(state, action) {
   }
 }
 // CONCATENATED MODULE: ./src/scripts/reducers/groups.js
-var groups_defaultState = [];
+const groups_defaultState = [];
 function groups(state, action) {
   if (state === void 0) {
     state = groups_defaultState;
@@ -1101,12 +1070,12 @@ function groups(state, action) {
   switch (action.type) {
     case 'ADD_GROUP':
       {
-        return [].concat(state, [{
+        return [...state, {
           id: action.id,
           value: action.value,
           active: action.active,
           disabled: action.disabled
-        }]);
+        }];
       }
 
     case 'CLEAR_CHOICES':
@@ -1121,7 +1090,7 @@ function groups(state, action) {
   }
 }
 // CONCATENATED MODULE: ./src/scripts/reducers/choices.js
-var choices_defaultState = [];
+const choices_defaultState = [];
 function choices_choices(state, action) {
   if (state === void 0) {
     state = choices_defaultState;
@@ -1135,7 +1104,7 @@ function choices_choices(state, action) {
             A selected choice has been added to the passed input's value (added as an item)
             An active choice appears within the choice dropdown
          */
-        return [].concat(state, [{
+        return [...state, {
           id: action.id,
           elementId: action.elementId,
           groupId: action.groupId,
@@ -1148,15 +1117,15 @@ function choices_choices(state, action) {
           customProperties: action.customProperties,
           placeholder: action.placeholder || false,
           keyCode: null
-        }]);
+        }];
       }
 
     case 'ADD_ITEM':
       {
         // If all choices need to be activated
         if (action.activateOptions) {
-          return state.map(function (obj) {
-            var choice = obj;
+          return state.map(obj => {
+            const choice = obj;
             choice.active = action.active;
             return choice;
           });
@@ -1165,8 +1134,8 @@ function choices_choices(state, action) {
 
 
         if (action.choiceId > -1) {
-          return state.map(function (obj) {
-            var choice = obj;
+          return state.map(obj => {
+            const choice = obj;
 
             if (choice.id === parseInt(action.choiceId, 10)) {
               choice.selected = true;
@@ -1184,8 +1153,8 @@ function choices_choices(state, action) {
         // When an item is removed and it has an associated choice,
         // we want to re-enable it so it can be chosen again
         if (action.choiceId > -1) {
-          return state.map(function (obj) {
-            var choice = obj;
+          return state.map(obj => {
+            const choice = obj;
 
             if (choice.id === parseInt(action.choiceId, 10)) {
               choice.selected = false;
@@ -1200,13 +1169,15 @@ function choices_choices(state, action) {
 
     case 'FILTER_CHOICES':
       {
-        return state.map(function (obj) {
-          var choice = obj; // Set active state based on whether choice is
+        return state.map(obj => {
+          const choice = obj; // Set active state based on whether choice is
           // within filtered results
 
-          choice.active = action.results.some(function (_ref) {
-            var item = _ref.item,
-                score = _ref.score;
+          choice.active = action.results.some(_ref => {
+            let {
+              item,
+              score
+            } = _ref;
 
             if (item.id === choice.id) {
               choice.score = score;
@@ -1221,8 +1192,8 @@ function choices_choices(state, action) {
 
     case 'ACTIVATE_CHOICES':
       {
-        return state.map(function (obj) {
-          var choice = obj;
+        return state.map(obj => {
+          const choice = obj;
           choice.active = action.active;
           return choice;
         });
@@ -1240,11 +1211,11 @@ function choices_choices(state, action) {
   }
 }
 // CONCATENATED MODULE: ./src/scripts/reducers/general.js
-var general_defaultState = {
+const general_defaultState = {
   loading: false
 };
 
-var general = function general(state, action) {
+const general = function (state, action) {
   if (state === void 0) {
     state = general_defaultState;
   }
@@ -1271,31 +1242,25 @@ var general = function general(state, action) {
  * @param {number} max
  * @returns {number}
  */
-var getRandomNumber = function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-};
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min) + min);
 /**
  * @param {number} length
  * @returns {string}
  */
 
-var generateChars = function generateChars(length) {
-  return Array.from({
-    length: length
-  }, function () {
-    return getRandomNumber(0, 36).toString(36);
-  }).join('');
-};
+const generateChars = length => Array.from({
+  length
+}, () => getRandomNumber(0, 36).toString(36)).join('');
 /**
  * @param {HTMLInputElement | HTMLSelectElement} element
  * @param {string} prefix
  * @returns {string}
  */
 
-var generateId = function generateId(element, prefix) {
-  var id = element.id || element.name && element.name + "-" + generateChars(2) || generateChars(4);
+const generateId = (element, prefix) => {
+  let id = element.id || element.name && `${element.name}-${generateChars(2)}` || generateChars(4);
   id = id.replace(/(:|\.|\[|\]|,)/g, '');
-  id = prefix + "-" + id;
+  id = `${prefix}-${id}`;
   return id;
 };
 /**
@@ -1303,25 +1268,21 @@ var generateId = function generateId(element, prefix) {
  * @returns {string}
  */
 
-var getType = function getType(obj) {
-  return Object.prototype.toString.call(obj).slice(8, -1);
-};
+const getType = obj => Object.prototype.toString.call(obj).slice(8, -1);
 /**
  * @param {string} type
  * @param {any} obj
  * @returns {boolean}
  */
 
-var isType = function isType(type, obj) {
-  return obj !== undefined && obj !== null && getType(obj) === type;
-};
+const isType = (type, obj) => obj !== undefined && obj !== null && getType(obj) === type;
 /**
  * @param {HTMLElement} element
  * @param {HTMLElement} [wrapper={HTMLDivElement}]
  * @returns {HTMLElement}
  */
 
-var utils_wrap = function wrap(element, wrapper) {
+const wrap = function (element, wrapper) {
   if (wrapper === void 0) {
     wrapper = document.createElement('div');
   }
@@ -1341,7 +1302,7 @@ var utils_wrap = function wrap(element, wrapper) {
  * @returns {Element | undefined}
  */
 
-var getAdjacentEl = function getAdjacentEl(startEl, selector, direction) {
+const getAdjacentEl = function (startEl, selector, direction) {
   if (direction === void 0) {
     direction = 1;
   }
@@ -1350,8 +1311,8 @@ var getAdjacentEl = function getAdjacentEl(startEl, selector, direction) {
     return undefined;
   }
 
-  var prop = (direction > 0 ? 'next' : 'previous') + "ElementSibling";
-  var sibling = startEl[prop];
+  const prop = `${direction > 0 ? 'next' : 'previous'}ElementSibling`;
+  let sibling = startEl[prop];
 
   while (sibling) {
     if (sibling.matches(selector)) {
@@ -1370,7 +1331,7 @@ var getAdjacentEl = function getAdjacentEl(startEl, selector, direction) {
  * @returns {boolean}
  */
 
-var isScrolledIntoView = function isScrolledIntoView(element, parent, direction) {
+const isScrolledIntoView = function (element, parent, direction) {
   if (direction === void 0) {
     direction = 1;
   }
@@ -1379,7 +1340,7 @@ var isScrolledIntoView = function isScrolledIntoView(element, parent, direction)
     return false;
   }
 
-  var isVisible;
+  let isVisible;
 
   if (direction > 0) {
     // In view from bottom
@@ -1396,7 +1357,7 @@ var isScrolledIntoView = function isScrolledIntoView(element, parent, direction)
  * @returns {any}
  */
 
-var sanitise = function sanitise(value) {
+const sanitise = value => {
   if (typeof value !== 'string') {
     return value;
   }
@@ -1407,12 +1368,12 @@ var sanitise = function sanitise(value) {
  * @returns {() => (str: string) => Element}
  */
 
-var strToEl = function () {
-  var tmpEl = document.createElement('div');
-  return function (str) {
-    var cleanedInput = str.trim();
+const strToEl = (() => {
+  const tmpEl = document.createElement('div');
+  return str => {
+    const cleanedInput = str.trim();
     tmpEl.innerHTML = cleanedInput;
-    var firldChild = tmpEl.children[0];
+    const firldChild = tmpEl.children[0];
 
     while (tmpEl.firstChild) {
       tmpEl.removeChild(tmpEl.firstChild);
@@ -1420,20 +1381,22 @@ var strToEl = function () {
 
     return firldChild;
   };
-}();
+})();
 /**
  * @param {{ label?: string, value: string }} a
  * @param {{ label?: string, value: string }} b
  * @returns {number}
  */
 
-var sortByAlpha = function sortByAlpha(_ref, _ref2) {
-  var value = _ref.value,
-      _ref$label = _ref.label,
-      label = _ref$label === void 0 ? value : _ref$label;
-  var value2 = _ref2.value,
-      _ref2$label = _ref2.label,
-      label2 = _ref2$label === void 0 ? value2 : _ref2$label;
+const sortByAlpha = (_ref, _ref2) => {
+  let {
+    value,
+    label = value
+  } = _ref;
+  let {
+    value: value2,
+    label: label2 = value2
+  } = _ref2;
   return label.localeCompare(label2, [], {
     sensitivity: 'base',
     ignorePunctuation: true,
@@ -1445,21 +1408,19 @@ var sortByAlpha = function sortByAlpha(_ref, _ref2) {
  * @param {{ score: number }} b
  */
 
-var sortByScore = function sortByScore(a, b) {
-  return a.score - b.score;
-};
+const sortByScore = (a, b) => a.score - b.score;
 /**
  * @param {HTMLElement} element
  * @param {string} type
  * @param {object} customArgs
  */
 
-var dispatchEvent = function dispatchEvent(element, type, customArgs) {
+const dispatchEvent = function (element, type, customArgs) {
   if (customArgs === void 0) {
     customArgs = null;
   }
 
-  var event = new CustomEvent(type, {
+  const event = new CustomEvent(type, {
     detail: customArgs,
     bubbles: true,
     cancelable: true
@@ -1473,12 +1434,12 @@ var dispatchEvent = function dispatchEvent(element, type, customArgs) {
  * @returns {boolean}
  */
 
-var existsInArray = function existsInArray(array, value, key) {
+const existsInArray = function (array, value, key) {
   if (key === void 0) {
     key = 'value';
   }
 
-  return array.some(function (item) {
+  return array.some(item => {
     if (typeof value === 'string') {
       return item[key] === value.trim();
     }
@@ -1491,9 +1452,7 @@ var existsInArray = function existsInArray(array, value, key) {
  * @returns {any}
  */
 
-var cloneObject = function cloneObject(obj) {
-  return JSON.parse(JSON.stringify(obj));
-};
+const cloneObject = obj => JSON.parse(JSON.stringify(obj));
 /**
  * Returns an array of keys present on the first but missing on the second object
  * @param {object} a
@@ -1501,12 +1460,10 @@ var cloneObject = function cloneObject(obj) {
  * @returns {string[]}
  */
 
-var diff = function diff(a, b) {
-  var aKeys = Object.keys(a).sort();
-  var bKeys = Object.keys(b).sort();
-  return aKeys.filter(function (i) {
-    return bKeys.indexOf(i) < 0;
-  });
+const diff = (a, b) => {
+  const aKeys = Object.keys(a).sort();
+  const bKeys = Object.keys(b).sort();
+  return aKeys.filter(i => bKeys.indexOf(i) < 0);
 };
 // CONCATENATED MODULE: ./src/scripts/reducers/index.js
 
@@ -1515,15 +1472,15 @@ var diff = function diff(a, b) {
 
 
 
-var appReducer = combineReducers({
+const appReducer = combineReducers({
   items: items_items,
   groups: groups,
   choices: choices_choices,
   general: reducers_general
 });
 
-var reducers_rootReducer = function rootReducer(passedState, action) {
-  var state = passedState; // If we are clearing all items, groups and options we reassign
+const rootReducer = (passedState, action) => {
+  let state = passedState; // If we are clearing all items, groups and options we reassign
   // state and then pass that state to our proper reducer. This isn't
   // mutating our actual state
   // See: http://stackoverflow.com/a/35641992
@@ -1537,12 +1494,8 @@ var reducers_rootReducer = function rootReducer(passedState, action) {
   return appReducer(state, action);
 };
 
-/* harmony default export */ var reducers = (reducers_rootReducer);
+/* harmony default export */ var reducers = (rootReducer);
 // CONCATENATED MODULE: ./src/scripts/store/store.js
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 /**
@@ -1551,11 +1504,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * @typedef {import('../../../types/index').Choices.Item} Item
  */
 
-var store_Store =
-/*#__PURE__*/
-function () {
-  function Store() {
-    this._store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+class store_Store {
+  constructor() {
+    this._store = redux_createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
   }
   /**
    * Subscribe store to function call (wrapped Redux method)
@@ -1564,9 +1515,7 @@ function () {
    */
 
 
-  var _proto = Store.prototype;
-
-  _proto.subscribe = function subscribe(onChange) {
+  subscribe(onChange) {
     this._store.subscribe(onChange);
   }
   /**
@@ -1574,22 +1523,125 @@ function () {
    * @param  {{ type: string, [x: string]: any }} action Action to trigger
    * @return
    */
-  ;
 
-  _proto.dispatch = function dispatch(action) {
+
+  dispatch(action) {
     this._store.dispatch(action);
   }
   /**
    * Get store object (wrapping Redux method)
    * @returns {object} State
    */
-  ;
 
+
+  get state() {
+    return this._store.getState();
+  }
+  /**
+   * Get items from store
+   * @returns {Item[]} Item objects
+   */
+
+
+  get items() {
+    return this.state.items;
+  }
+  /**
+   * Get active items from store
+   * @returns {Item[]} Item objects
+   */
+
+
+  get activeItems() {
+    return this.items.filter(item => item.active === true);
+  }
+  /**
+   * Get highlighted items from store
+   * @returns {Item[]} Item objects
+   */
+
+
+  get highlightedActiveItems() {
+    return this.items.filter(item => item.active && item.highlighted);
+  }
+  /**
+   * Get choices from store
+   * @returns {Choice[]} Option objects
+   */
+
+
+  get choices() {
+    return this.state.choices;
+  }
+  /**
+   * Get active choices from store
+   * @returns {Choice[]} Option objects
+   */
+
+
+  get activeChoices() {
+    return this.choices.filter(choice => choice.active === true);
+  }
+  /**
+   * Get selectable choices from store
+   * @returns {Choice[]} Option objects
+   */
+
+
+  get selectableChoices() {
+    return this.choices.filter(choice => choice.disabled !== true);
+  }
+  /**
+   * Get choices that can be searched (excluding placeholders)
+   * @returns {Choice[]} Option objects
+   */
+
+
+  get searchableChoices() {
+    return this.selectableChoices.filter(choice => choice.placeholder !== true);
+  }
+  /**
+   * Get placeholder choice from store
+   * @returns {Choice | undefined} Found placeholder
+   */
+
+
+  get placeholderChoice() {
+    return [...this.choices].reverse().find(choice => choice.placeholder === true);
+  }
+  /**
+   * Get groups from store
+   * @returns {Group[]} Group objects
+   */
+
+
+  get groups() {
+    return this.state.groups;
+  }
+  /**
+   * Get active groups from store
+   * @returns {Group[]} Group objects
+   */
+
+
+  get activeGroups() {
+    const {
+      groups,
+      choices
+    } = this;
+    return groups.filter(group => {
+      const isActive = group.active === true && group.disabled === false;
+      const hasActiveOptions = choices.some(choice => choice.active === true && choice.disabled === false);
+      return isActive && hasActiveOptions;
+    }, []);
+  }
   /**
    * Get loading state from store
    * @returns {boolean} Loading State
    */
-  _proto.isLoading = function isLoading() {
+
+
+  isLoading() {
     return this.state.general.loading;
   }
   /**
@@ -1597,169 +1649,29 @@ function () {
    * @param {string} id
    * @returns {Choice | undefined} Found choice
    */
-  ;
 
-  _proto.getChoiceById = function getChoiceById(id) {
-    return this.activeChoices.find(function (choice) {
-      return choice.id === parseInt(id, 10);
-    });
+
+  getChoiceById(id) {
+    return this.activeChoices.find(choice => choice.id === parseInt(id, 10));
   }
   /**
    * Get group by group id
    * @param  {number} id Group ID
    * @returns {Group | undefined} Group data
    */
-  ;
-
-  _proto.getGroupById = function getGroupById(id) {
-    return this.groups.find(function (group) {
-      return group.id === id;
-    });
-  };
-
-  _createClass(Store, [{
-    key: "state",
-    get: function get() {
-      return this._store.getState();
-    }
-    /**
-     * Get items from store
-     * @returns {Item[]} Item objects
-     */
-
-  }, {
-    key: "items",
-    get: function get() {
-      return this.state.items;
-    }
-    /**
-     * Get active items from store
-     * @returns {Item[]} Item objects
-     */
-
-  }, {
-    key: "activeItems",
-    get: function get() {
-      return this.items.filter(function (item) {
-        return item.active === true;
-      });
-    }
-    /**
-     * Get highlighted items from store
-     * @returns {Item[]} Item objects
-     */
-
-  }, {
-    key: "highlightedActiveItems",
-    get: function get() {
-      return this.items.filter(function (item) {
-        return item.active && item.highlighted;
-      });
-    }
-    /**
-     * Get choices from store
-     * @returns {Choice[]} Option objects
-     */
-
-  }, {
-    key: "choices",
-    get: function get() {
-      return this.state.choices;
-    }
-    /**
-     * Get active choices from store
-     * @returns {Choice[]} Option objects
-     */
-
-  }, {
-    key: "activeChoices",
-    get: function get() {
-      return this.choices.filter(function (choice) {
-        return choice.active === true;
-      });
-    }
-    /**
-     * Get selectable choices from store
-     * @returns {Choice[]} Option objects
-     */
-
-  }, {
-    key: "selectableChoices",
-    get: function get() {
-      return this.choices.filter(function (choice) {
-        return choice.disabled !== true;
-      });
-    }
-    /**
-     * Get choices that can be searched (excluding placeholders)
-     * @returns {Choice[]} Option objects
-     */
-
-  }, {
-    key: "searchableChoices",
-    get: function get() {
-      return this.selectableChoices.filter(function (choice) {
-        return choice.placeholder !== true;
-      });
-    }
-    /**
-     * Get placeholder choice from store
-     * @returns {Choice | undefined} Found placeholder
-     */
-
-  }, {
-    key: "placeholderChoice",
-    get: function get() {
-      return [].concat(this.choices).reverse().find(function (choice) {
-        return choice.placeholder === true;
-      });
-    }
-    /**
-     * Get groups from store
-     * @returns {Group[]} Group objects
-     */
-
-  }, {
-    key: "groups",
-    get: function get() {
-      return this.state.groups;
-    }
-    /**
-     * Get active groups from store
-     * @returns {Group[]} Group objects
-     */
-
-  }, {
-    key: "activeGroups",
-    get: function get() {
-      var groups = this.groups,
-          choices = this.choices;
-      return groups.filter(function (group) {
-        var isActive = group.active === true && group.disabled === false;
-        var hasActiveOptions = choices.some(function (choice) {
-          return choice.active === true && choice.disabled === false;
-        });
-        return isActive && hasActiveOptions;
-      }, []);
-    }
-  }]);
-
-  return Store;
-}();
 
 
+  getGroupById(id) {
+    return this.groups.find(group => group.id === id);
+  }
+
+}
 // CONCATENATED MODULE: ./src/scripts/components/dropdown.js
-function dropdown_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function dropdown_createClass(Constructor, protoProps, staticProps) { if (protoProps) dropdown_defineProperties(Constructor.prototype, protoProps); if (staticProps) dropdown_defineProperties(Constructor, staticProps); return Constructor; }
-
 /**
  * @typedef {import('../../../types/index').Choices.passedElement} passedElement
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
  */
-var Dropdown =
-/*#__PURE__*/
-function () {
+class Dropdown {
   /**
    * @param {{
    *  element: HTMLElement,
@@ -1767,10 +1679,12 @@ function () {
    *  classNames: ClassNames,
    * }} args
    */
-  function Dropdown(_ref) {
-    var element = _ref.element,
-        type = _ref.type,
-        classNames = _ref.classNames;
+  constructor(_ref) {
+    let {
+      element,
+      type,
+      classNames
+    } = _ref;
     this.element = element;
     this.classNames = classNames;
     this.type = type;
@@ -1782,23 +1696,26 @@ function () {
    */
 
 
-  var _proto = Dropdown.prototype;
-
+  get distanceFromTopWindow() {
+    return this.element.getBoundingClientRect().bottom;
+  }
   /**
    * Find element that matches passed selector
    * @param {string} selector
    * @returns {HTMLElement | null}
    */
-  _proto.getChild = function getChild(selector) {
+
+
+  getChild(selector) {
     return this.element.querySelector(selector);
   }
   /**
    * Show dropdown to user by adding active state class
    * @returns {this}
    */
-  ;
 
-  _proto.show = function show() {
+
+  show() {
     this.element.classList.add(this.classNames.activeState);
     this.element.setAttribute('aria-expanded', 'true');
     this.isActive = true;
@@ -1808,26 +1725,16 @@ function () {
    * Hide dropdown from user
    * @returns {this}
    */
-  ;
 
-  _proto.hide = function hide() {
+
+  hide() {
     this.element.classList.remove(this.classNames.activeState);
     this.element.setAttribute('aria-expanded', 'false');
     this.isActive = false;
     return this;
-  };
+  }
 
-  dropdown_createClass(Dropdown, [{
-    key: "distanceFromTopWindow",
-    get: function get() {
-      return this.element.getBoundingClientRect().bottom;
-    }
-  }]);
-
-  return Dropdown;
-}();
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/constants.js
 
 /**
@@ -1837,7 +1744,7 @@ function () {
 
 /** @type {ClassNames} */
 
-var DEFAULT_CLASSNAMES = {
+const DEFAULT_CLASSNAMES = {
   containerOuter: 'choices',
   containerInner: 'choices__inner',
   input: 'choices__input',
@@ -1867,7 +1774,7 @@ var DEFAULT_CLASSNAMES = {
 };
 /** @type {Options} */
 
-var DEFAULT_CONFIG = {
+const DEFAULT_CONFIG = {
   items: [],
   choices: [],
   silent: false,
@@ -1903,15 +1810,9 @@ var DEFAULT_CONFIG = {
   itemSelectText: 'Press to select',
   uniqueItemText: 'Only unique values can be added',
   customAddItemText: 'Only values matching specific conditions can be added',
-  addItemText: function addItemText(value) {
-    return "Press Enter to add <b>\"" + sanitise(value) + "\"</b>";
-  },
-  maxItemText: function maxItemText(maxItemCount) {
-    return "Only " + maxItemCount + " values can be added";
-  },
-  valueComparer: function valueComparer(value1, value2) {
-    return value1 === value2;
-  },
+  addItemText: value => `Press Enter to add <b>"${sanitise(value)}"</b>`,
+  maxItemText: maxItemCount => `Only ${maxItemCount} values can be added`,
+  valueComparer: (value1, value2) => value1 === value2,
   fuseOptions: {
     includeScore: true
   },
@@ -1919,7 +1820,7 @@ var DEFAULT_CONFIG = {
   callbackOnCreateTemplates: null,
   classNames: DEFAULT_CLASSNAMES
 };
-var EVENTS = {
+const EVENTS = {
   showDropdown: 'showDropdown',
   hideDropdown: 'hideDropdown',
   change: 'change',
@@ -1930,7 +1831,7 @@ var EVENTS = {
   highlightItem: 'highlightItem',
   highlightChoice: 'highlightChoice'
 };
-var ACTION_TYPES = {
+const ACTION_TYPES = {
   ADD_CHOICE: 'ADD_CHOICE',
   FILTER_CHOICES: 'FILTER_CHOICES',
   ACTIVATE_CHOICES: 'ACTIVATE_CHOICES',
@@ -1941,7 +1842,7 @@ var ACTION_TYPES = {
   HIGHLIGHT_ITEM: 'HIGHLIGHT_ITEM',
   CLEAR_ALL: 'CLEAR_ALL'
 };
-var KEY_CODES = {
+const KEY_CODES = {
   BACK_KEY: 46,
   DELETE_KEY: 8,
   ENTER_KEY: 13,
@@ -1952,10 +1853,10 @@ var KEY_CODES = {
   PAGE_UP_KEY: 33,
   PAGE_DOWN_KEY: 34
 };
-var TEXT_TYPE = 'text';
-var SELECT_ONE_TYPE = 'select-one';
-var SELECT_MULTIPLE_TYPE = 'select-multiple';
-var SCROLLING_SPEED = 4;
+const TEXT_TYPE = 'text';
+const SELECT_ONE_TYPE = 'select-one';
+const SELECT_MULTIPLE_TYPE = 'select-multiple';
+const SCROLLING_SPEED = 4;
 // CONCATENATED MODULE: ./src/scripts/components/container.js
 
 
@@ -1964,9 +1865,7 @@ var SCROLLING_SPEED = 4;
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
  */
 
-var container_Container =
-/*#__PURE__*/
-function () {
+class container_Container {
   /**
    * @param {{
    *  element: HTMLElement,
@@ -1975,11 +1874,13 @@ function () {
    *  position
    * }} args
    */
-  function Container(_ref) {
-    var element = _ref.element,
-        type = _ref.type,
-        classNames = _ref.classNames,
-        position = _ref.position;
+  constructor(_ref) {
+    let {
+      element,
+      type,
+      classNames,
+      position
+    } = _ref;
     this.element = element;
     this.classNames = classNames;
     this.type = type;
@@ -1993,14 +1894,12 @@ function () {
     this._onBlur = this._onBlur.bind(this);
   }
 
-  var _proto = Container.prototype;
-
-  _proto.addEventListeners = function addEventListeners() {
+  addEventListeners() {
     this.element.addEventListener('focus', this._onFocus);
     this.element.addEventListener('blur', this._onBlur);
-  };
+  }
 
-  _proto.removeEventListeners = function removeEventListeners() {
+  removeEventListeners() {
     this.element.removeEventListener('focus', this._onFocus);
     this.element.removeEventListener('blur', this._onBlur);
   }
@@ -2013,9 +1912,9 @@ function () {
   // prettier-ignore
 
   /* eslint-disable */
-  ;
 
-  _proto.shouldFlip = function shouldFlip(dropdownPos) {
+
+  shouldFlip(dropdownPos) {
     if (typeof dropdownPos !== 'number') {
       return false;
     }
@@ -2039,21 +1938,21 @@ function () {
   /**
    * @param {string} activeDescendantID
    */
-  ;
 
-  _proto.setActiveDescendant = function setActiveDescendant(activeDescendantID) {
+
+  setActiveDescendant(activeDescendantID) {
     this.element.setAttribute('aria-activedescendant', activeDescendantID);
-  };
+  }
 
-  _proto.removeActiveDescendant = function removeActiveDescendant() {
+  removeActiveDescendant() {
     this.element.removeAttribute('aria-activedescendant');
   }
   /**
    * @param {number} dropdownPos
    */
-  ;
 
-  _proto.open = function open(dropdownPos) {
+
+  open(dropdownPos) {
     this.element.classList.add(this.classNames.openState);
     this.element.setAttribute('aria-expanded', 'true');
     this.isOpen = true;
@@ -2062,9 +1961,9 @@ function () {
       this.element.classList.add(this.classNames.flippedState);
       this.isFlipped = true;
     }
-  };
+  }
 
-  _proto.close = function close() {
+  close() {
     this.element.classList.remove(this.classNames.openState);
     this.element.setAttribute('aria-expanded', 'false');
     this.removeActiveDescendant();
@@ -2074,23 +1973,23 @@ function () {
       this.element.classList.remove(this.classNames.flippedState);
       this.isFlipped = false;
     }
-  };
+  }
 
-  _proto.focus = function focus() {
+  focus() {
     if (!this.isFocussed) {
       this.element.focus();
     }
-  };
+  }
 
-  _proto.addFocusState = function addFocusState() {
+  addFocusState() {
     this.element.classList.add(this.classNames.focusState);
-  };
+  }
 
-  _proto.removeFocusState = function removeFocusState() {
+  removeFocusState() {
     this.element.classList.remove(this.classNames.focusState);
-  };
+  }
 
-  _proto.enable = function enable() {
+  enable() {
     this.element.classList.remove(this.classNames.disabledState);
     this.element.removeAttribute('aria-disabled');
 
@@ -2099,9 +1998,9 @@ function () {
     }
 
     this.isDisabled = false;
-  };
+  }
 
-  _proto.disable = function disable() {
+  disable() {
     this.element.classList.add(this.classNames.disabledState);
     this.element.setAttribute('aria-disabled', 'true');
 
@@ -2114,52 +2013,45 @@ function () {
   /**
    * @param {HTMLElement} element
    */
-  ;
 
-  _proto.wrap = function wrap(element) {
-    utils_wrap(element, this.element);
+
+  wrap(element) {
+    wrap(element, this.element);
   }
   /**
    * @param {Element} element
    */
-  ;
 
-  _proto.unwrap = function unwrap(element) {
+
+  unwrap(element) {
     // Move passed element outside this element
     this.element.parentNode.insertBefore(element, this.element); // Remove this element
 
     this.element.parentNode.removeChild(this.element);
-  };
+  }
 
-  _proto.addLoadingState = function addLoadingState() {
+  addLoadingState() {
     this.element.classList.add(this.classNames.loadingState);
     this.element.setAttribute('aria-busy', 'true');
     this.isLoading = true;
-  };
+  }
 
-  _proto.removeLoadingState = function removeLoadingState() {
+  removeLoadingState() {
     this.element.classList.remove(this.classNames.loadingState);
     this.element.removeAttribute('aria-busy');
     this.isLoading = false;
-  };
+  }
 
-  _proto._onFocus = function _onFocus() {
+  _onFocus() {
     this.isFocussed = true;
-  };
+  }
 
-  _proto._onBlur = function _onBlur() {
+  _onBlur() {
     this.isFocussed = false;
-  };
+  }
 
-  return Container;
-}();
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/components/input.js
-function input_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function input_createClass(Constructor, protoProps, staticProps) { if (protoProps) input_defineProperties(Constructor.prototype, protoProps); if (staticProps) input_defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 /**
@@ -2167,9 +2059,7 @@ function input_createClass(Constructor, protoProps, staticProps) { if (protoProp
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
  */
 
-var input_Input =
-/*#__PURE__*/
-function () {
+class input_Input {
   /**
    * @param {{
    *  element: HTMLInputElement,
@@ -2178,11 +2068,13 @@ function () {
    *  preventPaste: boolean
    * }} args
    */
-  function Input(_ref) {
-    var element = _ref.element,
-        type = _ref.type,
-        classNames = _ref.classNames,
-        preventPaste = _ref.preventPaste;
+  constructor(_ref) {
+    let {
+      element,
+      type,
+      classNames,
+      preventPaste
+    } = _ref;
     this.element = element;
     this.type = type;
     this.classNames = classNames;
@@ -2199,9 +2091,27 @@ function () {
    */
 
 
-  var _proto = Input.prototype;
+  set placeholder(placeholder) {
+    this.element.placeholder = placeholder;
+  }
+  /**
+   * @returns {string}
+   */
 
-  _proto.addEventListeners = function addEventListeners() {
+
+  get value() {
+    return sanitise(this.element.value);
+  }
+  /**
+   * @param {string} value
+   */
+
+
+  set value(value) {
+    this.element.value = value;
+  }
+
+  addEventListeners() {
     this.element.addEventListener('paste', this._onPaste);
     this.element.addEventListener('input', this._onInput, {
       passive: true
@@ -2212,9 +2122,9 @@ function () {
     this.element.addEventListener('blur', this._onBlur, {
       passive: true
     });
-  };
+  }
 
-  _proto.removeEventListeners = function removeEventListeners() {
+  removeEventListeners() {
     this.element.removeEventListener('input', this._onInput, {
       passive: true
     });
@@ -2225,25 +2135,25 @@ function () {
     this.element.removeEventListener('blur', this._onBlur, {
       passive: true
     });
-  };
+  }
 
-  _proto.enable = function enable() {
+  enable() {
     this.element.removeAttribute('disabled');
     this.isDisabled = false;
-  };
+  }
 
-  _proto.disable = function disable() {
+  disable() {
     this.element.setAttribute('disabled', '');
     this.isDisabled = true;
-  };
+  }
 
-  _proto.focus = function focus() {
+  focus() {
     if (!this.isFocussed) {
       this.element.focus();
     }
-  };
+  }
 
-  _proto.blur = function blur() {
+  blur() {
     if (this.isFocussed) {
       this.element.blur();
     }
@@ -2253,9 +2163,9 @@ function () {
    * @param {boolean} setWidth
    * @returns {this}
    */
-  ;
 
-  _proto.clear = function clear(setWidth) {
+
+  clear(setWidth) {
     if (setWidth === void 0) {
       setWidth = true;
     }
@@ -2274,31 +2184,32 @@ function () {
    * Set the correct input width based on placeholder
    * value or input value
    */
-  ;
 
-  _proto.setWidth = function setWidth() {
+
+  setWidth() {
     // Resize input to contents or placeholder
-    var _this$element = this.element,
-        style = _this$element.style,
-        value = _this$element.value,
-        placeholder = _this$element.placeholder;
-    style.minWidth = placeholder.length + 1 + "ch";
-    style.width = value.length + 1 + "ch";
+    const {
+      style,
+      value,
+      placeholder
+    } = this.element;
+    style.minWidth = `${placeholder.length + 1}ch`;
+    style.width = `${value.length + 1}ch`;
   }
   /**
    * @param {string} activeDescendantID
    */
-  ;
 
-  _proto.setActiveDescendant = function setActiveDescendant(activeDescendantID) {
+
+  setActiveDescendant(activeDescendantID) {
     this.element.setAttribute('aria-activedescendant', activeDescendantID);
-  };
+  }
 
-  _proto.removeActiveDescendant = function removeActiveDescendant() {
+  removeActiveDescendant() {
     this.element.removeAttribute('aria-activedescendant');
-  };
+  }
 
-  _proto._onInput = function _onInput() {
+  _onInput() {
     if (this.type !== SELECT_ONE_TYPE) {
       this.setWidth();
     }
@@ -2306,125 +2217,95 @@ function () {
   /**
    * @param {Event} event
    */
-  ;
 
-  _proto._onPaste = function _onPaste(event) {
+
+  _onPaste(event) {
     if (this.preventPaste) {
       event.preventDefault();
     }
-  };
+  }
 
-  _proto._onFocus = function _onFocus() {
+  _onFocus() {
     this.isFocussed = true;
-  };
+  }
 
-  _proto._onBlur = function _onBlur() {
+  _onBlur() {
     this.isFocussed = false;
-  };
+  }
 
-  input_createClass(Input, [{
-    key: "placeholder",
-    set: function set(placeholder) {
-      this.element.placeholder = placeholder;
-    }
-    /**
-     * @returns {string}
-     */
-
-  }, {
-    key: "value",
-    get: function get() {
-      return sanitise(this.element.value);
-    }
-    /**
-     * @param {string} value
-     */
-    ,
-    set: function set(value) {
-      this.element.value = value;
-    }
-  }]);
-
-  return Input;
-}();
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/components/list.js
 
 /**
  * @typedef {import('../../../types/index').Choices.Choice} Choice
  */
 
-var list_List =
-/*#__PURE__*/
-function () {
+class list_List {
   /**
    * @param {{ element: HTMLElement }} args
    */
-  function List(_ref) {
-    var element = _ref.element;
+  constructor(_ref) {
+    let {
+      element
+    } = _ref;
     this.element = element;
     this.scrollPos = this.element.scrollTop;
     this.height = this.element.offsetHeight;
   }
 
-  var _proto = List.prototype;
-
-  _proto.clear = function clear() {
+  clear() {
     this.element.innerHTML = '';
   }
   /**
    * @param {Element | DocumentFragment} node
    */
-  ;
 
-  _proto.append = function append(node) {
+
+  append(node) {
     this.element.appendChild(node);
   }
   /**
    * @param {string} selector
    * @returns {Element | null}
    */
-  ;
 
-  _proto.getChild = function getChild(selector) {
+
+  getChild(selector) {
     return this.element.querySelector(selector);
   }
   /**
    * @returns {boolean}
    */
-  ;
 
-  _proto.hasChildren = function hasChildren() {
+
+  hasChildren() {
     return this.element.hasChildNodes();
-  };
+  }
 
-  _proto.scrollToTop = function scrollToTop() {
+  scrollToTop() {
     this.element.scrollTop = 0;
   }
   /**
    * @param {Element} element
    * @param {1 | -1} direction
    */
-  ;
 
-  _proto.scrollToChildElement = function scrollToChildElement(element, direction) {
-    var _this = this;
 
+  scrollToChildElement(element, direction) {
     if (!element) {
       return;
     }
 
-    var listHeight = this.element.offsetHeight; // Scroll position of dropdown
+    const listHeight = this.element.offsetHeight; // Scroll position of dropdown
 
-    var listScrollPosition = this.element.scrollTop + listHeight;
-    var elementHeight = element.offsetHeight; // Distance from bottom of element to top of parent
+    const listScrollPosition = this.element.scrollTop + listHeight;
+    const elementHeight = element.offsetHeight; // Distance from bottom of element to top of parent
 
-    var elementPos = element.offsetTop + elementHeight; // Difference between the element and scroll position
+    const elementPos = element.offsetTop + elementHeight; // Difference between the element and scroll position
 
-    var destination = direction > 0 ? this.element.scrollTop + elementPos - listScrollPosition : element.offsetTop;
-    requestAnimationFrame(function () {
-      _this._animateScroll(destination, direction);
+    const destination = direction > 0 ? this.element.scrollTop + elementPos - listScrollPosition : element.offsetTop;
+    requestAnimationFrame(() => {
+      this._animateScroll(destination, direction);
     });
   }
   /**
@@ -2432,11 +2313,11 @@ function () {
    * @param {number} strength
    * @param {number} destination
    */
-  ;
 
-  _proto._scrollDown = function _scrollDown(scrollPos, strength, destination) {
-    var easing = (destination - scrollPos) / strength;
-    var distance = easing > 1 ? easing : 1;
+
+  _scrollDown(scrollPos, strength, destination) {
+    const easing = (destination - scrollPos) / strength;
+    const distance = easing > 1 ? easing : 1;
     this.element.scrollTop = scrollPos + distance;
   }
   /**
@@ -2444,25 +2325,23 @@ function () {
    * @param {number} strength
    * @param {number} destination
    */
-  ;
 
-  _proto._scrollUp = function _scrollUp(scrollPos, strength, destination) {
-    var easing = (scrollPos - destination) / strength;
-    var distance = easing > 1 ? easing : 1;
+
+  _scrollUp(scrollPos, strength, destination) {
+    const easing = (scrollPos - destination) / strength;
+    const distance = easing > 1 ? easing : 1;
     this.element.scrollTop = scrollPos - distance;
   }
   /**
    * @param {*} destination
    * @param {*} direction
    */
-  ;
 
-  _proto._animateScroll = function _animateScroll(destination, direction) {
-    var _this2 = this;
 
-    var strength = SCROLLING_SPEED;
-    var choiceListScrollTop = this.element.scrollTop;
-    var continueAnimation = false;
+  _animateScroll(destination, direction) {
+    const strength = SCROLLING_SPEED;
+    const choiceListScrollTop = this.element.scrollTop;
+    let continueAnimation = false;
 
     if (direction > 0) {
       this._scrollDown(choiceListScrollTop, strength, destination);
@@ -2479,39 +2358,32 @@ function () {
     }
 
     if (continueAnimation) {
-      requestAnimationFrame(function () {
-        _this2._animateScroll(destination, direction);
+      requestAnimationFrame(() => {
+        this._animateScroll(destination, direction);
       });
     }
-  };
+  }
 
-  return List;
-}();
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/components/wrapped-element.js
-function wrapped_element_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function wrapped_element_createClass(Constructor, protoProps, staticProps) { if (protoProps) wrapped_element_defineProperties(Constructor.prototype, protoProps); if (staticProps) wrapped_element_defineProperties(Constructor, staticProps); return Constructor; }
-
 
 /**
  * @typedef {import('../../../types/index').Choices.passedElement} passedElement
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
  */
 
-var wrapped_element_WrappedElement =
-/*#__PURE__*/
-function () {
+class wrapped_element_WrappedElement {
   /**
    * @param {{
    *  element: HTMLInputElement | HTMLSelectElement,
    *  classNames: ClassNames,
    * }} args
    */
-  function WrappedElement(_ref) {
-    var element = _ref.element,
-        classNames = _ref.classNames;
+  constructor(_ref) {
+    let {
+      element,
+      classNames
+    } = _ref;
     this.element = element;
     this.classNames = classNames;
 
@@ -2522,31 +2394,46 @@ function () {
     this.isDisabled = false;
   }
 
-  var _proto = WrappedElement.prototype;
+  get isActive() {
+    return this.element.dataset.choice === 'active';
+  }
 
-  _proto.conceal = function conceal() {
+  get dir() {
+    return this.element.dir;
+  }
+
+  get value() {
+    return this.element.value;
+  }
+
+  set value(value) {
+    // you must define setter here otherwise it will be readonly property
+    this.element.value = value;
+  }
+
+  conceal() {
     // Hide passed input
     this.element.classList.add(this.classNames.input);
     this.element.hidden = true; // Remove element from tab index
 
     this.element.tabIndex = -1; // Backup original styles if any
 
-    var origStyle = this.element.getAttribute('style');
+    const origStyle = this.element.getAttribute('style');
 
     if (origStyle) {
       this.element.setAttribute('data-choice-orig-style', origStyle);
     }
 
     this.element.setAttribute('data-choice', 'active');
-  };
+  }
 
-  _proto.reveal = function reveal() {
+  reveal() {
     // Reinstate passed element
     this.element.classList.remove(this.classNames.input);
     this.element.hidden = false;
     this.element.removeAttribute('tabindex'); // Recover original styles if any
 
-    var origStyle = this.element.getAttribute('data-choice-orig-style');
+    const origStyle = this.element.getAttribute('data-choice-orig-style');
 
     if (origStyle) {
       this.element.removeAttribute('data-choice-orig-style');
@@ -2559,67 +2446,33 @@ function () {
     // @todo Figure out why we need to do this
 
     this.element.value = this.element.value; // eslint-disable-line no-self-assign
-  };
+  }
 
-  _proto.enable = function enable() {
+  enable() {
     this.element.removeAttribute('disabled');
     this.element.disabled = false;
     this.isDisabled = false;
-  };
+  }
 
-  _proto.disable = function disable() {
+  disable() {
     this.element.setAttribute('disabled', '');
     this.element.disabled = true;
     this.isDisabled = true;
-  };
+  }
 
-  _proto.triggerEvent = function triggerEvent(eventType, data) {
+  triggerEvent(eventType, data) {
     dispatchEvent(this.element, eventType, data);
-  };
+  }
 
-  wrapped_element_createClass(WrappedElement, [{
-    key: "isActive",
-    get: function get() {
-      return this.element.dataset.choice === 'active';
-    }
-  }, {
-    key: "dir",
-    get: function get() {
-      return this.element.dir;
-    }
-  }, {
-    key: "value",
-    get: function get() {
-      return this.element.value;
-    },
-    set: function set(value) {
-      // you must define setter here otherwise it will be readonly property
-      this.element.value = value;
-    }
-  }]);
-
-  return WrappedElement;
-}();
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/components/wrapped-input.js
-function wrapped_input_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function wrapped_input_createClass(Constructor, protoProps, staticProps) { if (protoProps) wrapped_input_defineProperties(Constructor.prototype, protoProps); if (staticProps) wrapped_input_defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 
 /**
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
  * @typedef {import('../../../types/index').Choices.Item} Item
  */
 
-var WrappedInput =
-/*#__PURE__*/
-function (_WrappedElement) {
-  _inheritsLoose(WrappedInput, _WrappedElement);
-
+class wrapped_input_WrappedInput extends wrapped_element_WrappedElement {
   /**
    * @param {{
    *  element: HTMLInputElement,
@@ -2627,55 +2480,45 @@ function (_WrappedElement) {
    *  delimiter: string
    * }} args
    */
-  function WrappedInput(_ref) {
-    var _this;
-
-    var element = _ref.element,
-        classNames = _ref.classNames,
-        delimiter = _ref.delimiter;
-    _this = _WrappedElement.call(this, {
-      element: element,
-      classNames: classNames
-    }) || this;
-    _this.delimiter = delimiter;
-    return _this;
+  constructor(_ref) {
+    let {
+      element,
+      classNames,
+      delimiter
+    } = _ref;
+    super({
+      element,
+      classNames
+    });
+    this.delimiter = delimiter;
   }
   /**
    * @returns {string}
    */
 
 
-  wrapped_input_createClass(WrappedInput, [{
-    key: "value",
-    get: function get() {
-      return this.element.value;
-    }
-    /**
-     * @param {Item[]} items
-     */
-    ,
-    set: function set(items) {
-      var itemValues = items.map(function (_ref2) {
-        var value = _ref2.value;
-        return value;
-      });
-      var joinedValues = itemValues.join(this.delimiter);
-      this.element.setAttribute('value', joinedValues);
-      this.element.value = joinedValues;
-    }
-  }]);
-
-  return WrappedInput;
-}(wrapped_element_WrappedElement);
+  get value() {
+    return this.element.value;
+  }
+  /**
+   * @param {Item[]} items
+   */
 
 
+  set value(items) {
+    const itemValues = items.map(_ref2 => {
+      let {
+        value
+      } = _ref2;
+      return value;
+    });
+    const joinedValues = itemValues.join(this.delimiter);
+    this.element.setAttribute('value', joinedValues);
+    this.element.value = joinedValues;
+  }
+
+}
 // CONCATENATED MODULE: ./src/scripts/components/wrapped-select.js
-function wrapped_select_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function wrapped_select_createClass(Constructor, protoProps, staticProps) { if (protoProps) wrapped_select_defineProperties(Constructor.prototype, protoProps); if (staticProps) wrapped_select_defineProperties(Constructor, staticProps); return Constructor; }
-
-function wrapped_select_inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 
 /**
  * @typedef {import('../../../types/index').Choices.ClassNames} ClassNames
@@ -2683,11 +2526,7 @@ function wrapped_select_inheritsLoose(subClass, superClass) { subClass.prototype
  * @typedef {import('../../../types/index').Choices.Choice} Choice
  */
 
-var WrappedSelect =
-/*#__PURE__*/
-function (_WrappedElement) {
-  wrapped_select_inheritsLoose(WrappedSelect, _WrappedElement);
-
+class wrapped_select_WrappedSelect extends wrapped_element_WrappedElement {
   /**
    * @param {{
    *  element: HTMLSelectElement,
@@ -2696,83 +2535,69 @@ function (_WrappedElement) {
    *  template: function
    * }} args
    */
-  function WrappedSelect(_ref) {
-    var _this;
-
-    var element = _ref.element,
-        classNames = _ref.classNames,
-        template = _ref.template;
-    _this = _WrappedElement.call(this, {
-      element: element,
-      classNames: classNames
-    }) || this;
-    _this.template = template;
-    return _this;
+  constructor(_ref) {
+    let {
+      element,
+      classNames,
+      template
+    } = _ref;
+    super({
+      element,
+      classNames
+    });
+    this.template = template;
   }
 
-  var _proto = WrappedSelect.prototype;
+  get placeholderOption() {
+    return this.element.querySelector('option[value=""]') || // Backward compatibility layer for the non-standard placeholder attribute supported in older versions.
+    this.element.querySelector('option[placeholder]');
+  }
+  /**
+   * @returns {Element[]}
+   */
 
+
+  get optionGroups() {
+    return Array.from(this.element.getElementsByTagName('OPTGROUP'));
+  }
+  /**
+   * @returns {Item[] | Choice[]}
+   */
+
+
+  get options() {
+    return Array.from(this.element.options);
+  }
+  /**
+   * @param {Item[] | Choice[]} options
+   */
+
+
+  set options(options) {
+    const fragment = document.createDocumentFragment();
+
+    const addOptionToFragment = data => {
+      // Create a standard select option
+      const option = this.template(data); // Append it to fragment
+
+      fragment.appendChild(option);
+    }; // Add each list item to list
+
+
+    options.forEach(optionData => addOptionToFragment(optionData));
+    this.appendDocFragment(fragment);
+  }
   /**
    * @param {DocumentFragment} fragment
    */
-  _proto.appendDocFragment = function appendDocFragment(fragment) {
+
+
+  appendDocFragment(fragment) {
     this.element.innerHTML = '';
     this.element.appendChild(fragment);
-  };
+  }
 
-  wrapped_select_createClass(WrappedSelect, [{
-    key: "placeholderOption",
-    get: function get() {
-      return this.element.querySelector('option[value=""]') || // Backward compatibility layer for the non-standard placeholder attribute supported in older versions.
-      this.element.querySelector('option[placeholder]');
-    }
-    /**
-     * @returns {Element[]}
-     */
-
-  }, {
-    key: "optionGroups",
-    get: function get() {
-      return Array.from(this.element.getElementsByTagName('OPTGROUP'));
-    }
-    /**
-     * @returns {Item[] | Choice[]}
-     */
-
-  }, {
-    key: "options",
-    get: function get() {
-      return Array.from(this.element.options);
-    }
-    /**
-     * @param {Item[] | Choice[]} options
-     */
-    ,
-    set: function set(options) {
-      var _this2 = this;
-
-      var fragment = document.createDocumentFragment();
-
-      var addOptionToFragment = function addOptionToFragment(data) {
-        // Create a standard select option
-        var option = _this2.template(data); // Append it to fragment
-
-
-        fragment.appendChild(option);
-      }; // Add each list item to list
-
-
-      options.forEach(function (optionData) {
-        return addOptionToFragment(optionData);
-      });
-      this.appendDocFragment(fragment);
-    }
-  }]);
-
-  return WrappedSelect;
-}(wrapped_element_WrappedElement);
-
-
+}
 // CONCATENATED MODULE: ./src/scripts/components/index.js
 
 
@@ -2792,7 +2617,7 @@ function (_WrappedElement) {
  * @typedef {import('../../types/index').Choices.Choice} Choice
  * @typedef {import('../../types/index').Choices.Group} Group
  */
-var TEMPLATES =
+const TEMPLATES =
 /** @type {Templates} */
 {
   /**
@@ -2803,10 +2628,12 @@ var TEMPLATES =
    * @param {boolean} searchEnabled
    * @param {"select-one" | "select-multiple" | "text"} passedElementType
    */
-  containerOuter: function containerOuter(_ref, dir, isSelectElement, isSelectOneElement, searchEnabled, passedElementType) {
-    var _containerOuter = _ref.containerOuter;
-    var div = Object.assign(document.createElement('div'), {
-      className: _containerOuter
+  containerOuter(_ref, dir, isSelectElement, isSelectOneElement, searchEnabled, passedElementType) {
+    let {
+      containerOuter
+    } = _ref;
+    const div = Object.assign(document.createElement('div'), {
+      className: containerOuter
     });
     div.dataset.type = passedElementType;
 
@@ -2834,10 +2661,12 @@ var TEMPLATES =
   /**
    * @param {Partial<ClassNames>} classNames
    */
-  containerInner: function containerInner(_ref2) {
-    var _containerInner = _ref2.containerInner;
+  containerInner(_ref2) {
+    let {
+      containerInner
+    } = _ref2;
     return Object.assign(document.createElement('div'), {
-      className: _containerInner
+      className: containerInner
     });
   },
 
@@ -2845,12 +2674,14 @@ var TEMPLATES =
    * @param {Partial<ClassNames>} classNames
    * @param {boolean} isSelectOneElement
    */
-  itemList: function itemList(_ref3, isSelectOneElement) {
-    var list = _ref3.list,
-        listSingle = _ref3.listSingle,
-        listItems = _ref3.listItems;
+  itemList(_ref3, isSelectOneElement) {
+    let {
+      list,
+      listSingle,
+      listItems
+    } = _ref3;
     return Object.assign(document.createElement('div'), {
-      className: list + " " + (isSelectOneElement ? listSingle : listItems)
+      className: `${list} ${isSelectOneElement ? listSingle : listItems}`
     });
   },
 
@@ -2858,10 +2689,12 @@ var TEMPLATES =
    * @param {Partial<ClassNames>} classNames
    * @param {string} value
    */
-  placeholder: function placeholder(_ref4, value) {
-    var _placeholder = _ref4.placeholder;
+  placeholder(_ref4, value) {
+    let {
+      placeholder
+    } = _ref4;
     return Object.assign(document.createElement('div'), {
-      className: _placeholder,
+      className: placeholder,
       innerHTML: value
     });
   },
@@ -2871,29 +2704,33 @@ var TEMPLATES =
    * @param {Item} item
    * @param {boolean} removeItemButton
    */
-  item: function item(_ref5, _ref6, removeItemButton) {
-    var _item = _ref5.item,
-        button = _ref5.button,
-        highlightedState = _ref5.highlightedState,
-        itemSelectable = _ref5.itemSelectable,
-        placeholder = _ref5.placeholder;
-    var id = _ref6.id,
-        value = _ref6.value,
-        label = _ref6.label,
-        customProperties = _ref6.customProperties,
-        active = _ref6.active,
-        disabled = _ref6.disabled,
-        highlighted = _ref6.highlighted,
-        isPlaceholder = _ref6.placeholder;
-    var div = Object.assign(document.createElement('div'), {
-      className: _item,
+  item(_ref5, _ref6, removeItemButton) {
+    let {
+      item,
+      button,
+      highlightedState,
+      itemSelectable,
+      placeholder
+    } = _ref5;
+    let {
+      id,
+      value,
+      label,
+      customProperties,
+      active,
+      disabled,
+      highlighted,
+      placeholder: isPlaceholder
+    } = _ref6;
+    const div = Object.assign(document.createElement('div'), {
+      className: item,
       innerHTML: label
     });
     Object.assign(div.dataset, {
       item: '',
-      id: id,
-      value: value,
-      customProperties: customProperties
+      id,
+      value,
+      customProperties
     });
 
     if (active) {
@@ -2918,13 +2755,13 @@ var TEMPLATES =
       div.dataset.deletable = '';
       /** @todo This MUST be localizable, not hardcoded! */
 
-      var REMOVE_ITEM_TEXT = 'Remove item';
-      var removeButton = Object.assign(document.createElement('button'), {
+      const REMOVE_ITEM_TEXT = 'Remove item';
+      const removeButton = Object.assign(document.createElement('button'), {
         type: 'button',
         className: button,
         innerHTML: REMOVE_ITEM_TEXT
       });
-      removeButton.setAttribute('aria-label', REMOVE_ITEM_TEXT + ": '" + value + "'");
+      removeButton.setAttribute('aria-label', `${REMOVE_ITEM_TEXT}: '${value}'`);
       removeButton.dataset.button = '';
       div.appendChild(removeButton);
     }
@@ -2936,9 +2773,11 @@ var TEMPLATES =
    * @param {Partial<ClassNames>} classNames
    * @param {boolean} isSelectOneElement
    */
-  choiceList: function choiceList(_ref7, isSelectOneElement) {
-    var list = _ref7.list;
-    var div = Object.assign(document.createElement('div'), {
+  choiceList(_ref7, isSelectOneElement) {
+    let {
+      list
+    } = _ref7;
+    const div = Object.assign(document.createElement('div'), {
       className: list
     });
 
@@ -2954,21 +2793,25 @@ var TEMPLATES =
    * @param {Partial<ClassNames>} classNames
    * @param {Group} group
    */
-  choiceGroup: function choiceGroup(_ref8, _ref9) {
-    var group = _ref8.group,
-        groupHeading = _ref8.groupHeading,
-        itemDisabled = _ref8.itemDisabled;
-    var id = _ref9.id,
-        value = _ref9.value,
-        disabled = _ref9.disabled;
-    var div = Object.assign(document.createElement('div'), {
-      className: group + " " + (disabled ? itemDisabled : '')
+  choiceGroup(_ref8, _ref9) {
+    let {
+      group,
+      groupHeading,
+      itemDisabled
+    } = _ref8;
+    let {
+      id,
+      value,
+      disabled
+    } = _ref9;
+    const div = Object.assign(document.createElement('div'), {
+      className: `${group} ${disabled ? itemDisabled : ''}`
     });
     div.setAttribute('role', 'group');
     Object.assign(div.dataset, {
       group: '',
-      id: id,
-      value: value
+      id,
+      value
     });
 
     if (disabled) {
@@ -2987,25 +2830,29 @@ var TEMPLATES =
    * @param {Choice} choice
    * @param {Options['itemSelectText']} selectText
    */
-  choice: function choice(_ref10, _ref11, selectText) {
-    var item = _ref10.item,
-        itemChoice = _ref10.itemChoice,
-        itemSelectable = _ref10.itemSelectable,
-        selectedState = _ref10.selectedState,
-        itemDisabled = _ref10.itemDisabled,
-        placeholder = _ref10.placeholder;
-    var id = _ref11.id,
-        value = _ref11.value,
-        label = _ref11.label,
-        groupId = _ref11.groupId,
-        elementId = _ref11.elementId,
-        isDisabled = _ref11.disabled,
-        isSelected = _ref11.selected,
-        isPlaceholder = _ref11.placeholder;
-    var div = Object.assign(document.createElement('div'), {
+  choice(_ref10, _ref11, selectText) {
+    let {
+      item,
+      itemChoice,
+      itemSelectable,
+      selectedState,
+      itemDisabled,
+      placeholder
+    } = _ref10;
+    let {
+      id,
+      value,
+      label,
+      groupId,
+      elementId,
+      disabled: isDisabled,
+      selected: isSelected,
+      placeholder: isPlaceholder
+    } = _ref11;
+    const div = Object.assign(document.createElement('div'), {
       id: elementId,
       innerHTML: label,
-      className: item + " " + itemChoice
+      className: `${item} ${itemChoice}`
     });
 
     if (isSelected) {
@@ -3019,9 +2866,9 @@ var TEMPLATES =
     div.setAttribute('role', groupId > 0 ? 'treeitem' : 'option');
     Object.assign(div.dataset, {
       choice: '',
-      id: id,
-      value: value,
-      selectText: selectText
+      id,
+      value,
+      selectText
     });
 
     if (isDisabled) {
@@ -3040,12 +2887,14 @@ var TEMPLATES =
    * @param {Partial<ClassNames>} classNames
    * @param {string} placeholderValue
    */
-  input: function input(_ref12, placeholderValue) {
-    var _input = _ref12.input,
-        inputCloned = _ref12.inputCloned;
-    var inp = Object.assign(document.createElement('input'), {
+  input(_ref12, placeholderValue) {
+    let {
+      input,
+      inputCloned
+    } = _ref12;
+    const inp = Object.assign(document.createElement('input'), {
       type: 'text',
-      className: _input + " " + inputCloned,
+      className: `${input} ${inputCloned}`,
       autocomplete: 'off',
       autocapitalize: 'off',
       spellcheck: false
@@ -3059,10 +2908,12 @@ var TEMPLATES =
   /**
    * @param {Partial<ClassNames>} classNames
    */
-  dropdown: function dropdown(_ref13) {
-    var list = _ref13.list,
-        listDropdown = _ref13.listDropdown;
-    var div = document.createElement('div');
+  dropdown(_ref13) {
+    let {
+      list,
+      listDropdown
+    } = _ref13;
+    const div = document.createElement('div');
     div.classList.add(list, listDropdown);
     div.setAttribute('aria-expanded', 'false');
     return div;
@@ -3074,17 +2925,19 @@ var TEMPLATES =
    * @param {string} innerHTML
    * @param {"no-choices" | "no-results" | ""} type
    */
-  notice: function notice(_ref14, innerHTML, type) {
-    var item = _ref14.item,
-        itemChoice = _ref14.itemChoice,
-        noResults = _ref14.noResults,
-        noChoices = _ref14.noChoices;
+  notice(_ref14, innerHTML, type) {
+    let {
+      item,
+      itemChoice,
+      noResults,
+      noChoices
+    } = _ref14;
 
     if (type === void 0) {
       type = '';
     }
 
-    var classes = [item, itemChoice];
+    const classes = [item, itemChoice];
 
     if (type === 'no-choices') {
       classes.push(noChoices);
@@ -3093,7 +2946,7 @@ var TEMPLATES =
     }
 
     return Object.assign(document.createElement('div'), {
-      innerHTML: innerHTML,
+      innerHTML,
       className: classes.join(' ')
     });
   },
@@ -3101,13 +2954,15 @@ var TEMPLATES =
   /**
    * @param {Item} option
    */
-  option: function option(_ref15) {
-    var label = _ref15.label,
-        value = _ref15.value,
-        customProperties = _ref15.customProperties,
-        active = _ref15.active,
-        disabled = _ref15.disabled;
-    var opt = new Option(label, value, false, active);
+  option(_ref15) {
+    let {
+      label,
+      value,
+      customProperties,
+      active,
+      disabled
+    } = _ref15;
+    const opt = new Option(label, value, false, active);
 
     if (customProperties) {
       opt.dataset.customProperties = customProperties;
@@ -3116,6 +2971,7 @@ var TEMPLATES =
     opt.disabled = disabled;
     return opt;
   }
+
 };
 /* harmony default export */ var templates = (TEMPLATES);
 // CONCATENATED MODULE: ./src/scripts/actions/choices.js
@@ -3129,27 +2985,29 @@ var TEMPLATES =
  * @returns {Action & Choice}
  */
 
-var choices_addChoice = function addChoice(_ref) {
-  var value = _ref.value,
-      label = _ref.label,
-      id = _ref.id,
-      groupId = _ref.groupId,
-      disabled = _ref.disabled,
-      elementId = _ref.elementId,
-      customProperties = _ref.customProperties,
-      placeholder = _ref.placeholder,
-      keyCode = _ref.keyCode;
+const addChoice = _ref => {
+  let {
+    value,
+    label,
+    id,
+    groupId,
+    disabled,
+    elementId,
+    customProperties,
+    placeholder,
+    keyCode
+  } = _ref;
   return {
     type: ACTION_TYPES.ADD_CHOICE,
-    value: value,
-    label: label,
-    id: id,
-    groupId: groupId,
-    disabled: disabled,
-    elementId: elementId,
-    customProperties: customProperties,
-    placeholder: placeholder,
-    keyCode: keyCode
+    value,
+    label,
+    id,
+    groupId,
+    disabled,
+    elementId,
+    customProperties,
+    placeholder,
+    keyCode
   };
 };
 /**
@@ -3157,36 +3015,32 @@ var choices_addChoice = function addChoice(_ref) {
  * @returns {Action & { results: Choice[] }}
  */
 
-var choices_filterChoices = function filterChoices(results) {
-  return {
-    type: ACTION_TYPES.FILTER_CHOICES,
-    results: results
-  };
-};
+const filterChoices = results => ({
+  type: ACTION_TYPES.FILTER_CHOICES,
+  results
+});
 /**
  * @argument {boolean} active
  * @returns {Action & { active: boolean }}
  */
 
-var choices_activateChoices = function activateChoices(active) {
+const activateChoices = function (active) {
   if (active === void 0) {
     active = true;
   }
 
   return {
     type: ACTION_TYPES.ACTIVATE_CHOICES,
-    active: active
+    active
   };
 };
 /**
  * @returns {Action}
  */
 
-var choices_clearChoices = function clearChoices() {
-  return {
-    type: ACTION_TYPES.CLEAR_CHOICES
-  };
-};
+const clearChoices = () => ({
+  type: ACTION_TYPES.CLEAR_CHOICES
+});
 // CONCATENATED MODULE: ./src/scripts/actions/items.js
 
 /**
@@ -3199,25 +3053,27 @@ var choices_clearChoices = function clearChoices() {
  * @returns {Action & Item}
  */
 
-var items_addItem = function addItem(_ref) {
-  var value = _ref.value,
-      label = _ref.label,
-      id = _ref.id,
-      choiceId = _ref.choiceId,
-      groupId = _ref.groupId,
-      customProperties = _ref.customProperties,
-      placeholder = _ref.placeholder,
-      keyCode = _ref.keyCode;
+const addItem = _ref => {
+  let {
+    value,
+    label,
+    id,
+    choiceId,
+    groupId,
+    customProperties,
+    placeholder,
+    keyCode
+  } = _ref;
   return {
     type: ACTION_TYPES.ADD_ITEM,
-    value: value,
-    label: label,
-    id: id,
-    choiceId: choiceId,
-    groupId: groupId,
-    customProperties: customProperties,
-    placeholder: placeholder,
-    keyCode: keyCode
+    value,
+    label,
+    id,
+    choiceId,
+    groupId,
+    customProperties,
+    placeholder,
+    keyCode
   };
 };
 /**
@@ -3226,26 +3082,22 @@ var items_addItem = function addItem(_ref) {
  * @returns {Action & { id: string, choiceId: string }}
  */
 
-var items_removeItem = function removeItem(id, choiceId) {
-  return {
-    type: ACTION_TYPES.REMOVE_ITEM,
-    id: id,
-    choiceId: choiceId
-  };
-};
+const removeItem = (id, choiceId) => ({
+  type: ACTION_TYPES.REMOVE_ITEM,
+  id,
+  choiceId
+});
 /**
  * @param {string} id
  * @param {boolean} highlighted
  * @returns {Action & { id: string, highlighted: boolean }}
  */
 
-var items_highlightItem = function highlightItem(id, highlighted) {
-  return {
-    type: ACTION_TYPES.HIGHLIGHT_ITEM,
-    id: id,
-    highlighted: highlighted
-  };
-};
+const highlightItem = (id, highlighted) => ({
+  type: ACTION_TYPES.HIGHLIGHT_ITEM,
+  id,
+  highlighted
+});
 // CONCATENATED MODULE: ./src/scripts/actions/groups.js
 
 /**
@@ -3258,17 +3110,19 @@ var items_highlightItem = function highlightItem(id, highlighted) {
  * @returns {Action & Group}
  */
 
-var groups_addGroup = function addGroup(_ref) {
-  var value = _ref.value,
-      id = _ref.id,
-      active = _ref.active,
-      disabled = _ref.disabled;
+const addGroup = _ref => {
+  let {
+    value,
+    id,
+    active,
+    disabled
+  } = _ref;
   return {
     type: ACTION_TYPES.ADD_GROUP,
-    value: value,
-    id: id,
-    active: active,
-    disabled: disabled
+    value,
+    id,
+    active,
+    disabled
   };
 };
 // CONCATENATED MODULE: ./src/scripts/actions/misc.js
@@ -3279,38 +3133,28 @@ var groups_addGroup = function addGroup(_ref) {
 /**
  * @returns {Action}
  */
-var clearAll = function clearAll() {
-  return {
-    type: 'CLEAR_ALL'
-  };
-};
+const clearAll = () => ({
+  type: 'CLEAR_ALL'
+});
 /**
  * @param {any} state
  * @returns {Action & { state: object }}
  */
 
-var resetTo = function resetTo(state) {
-  return {
-    type: 'RESET_TO',
-    state: state
-  };
-};
+const resetTo = state => ({
+  type: 'RESET_TO',
+  state
+});
 /**
  * @param {boolean} isLoading
  * @returns {Action & { isLoading: boolean }}
  */
 
-var setIsLoading = function setIsLoading(isLoading) {
-  return {
-    type: 'SET_IS_LOADING',
-    isLoading: isLoading
-  };
-};
+const setIsLoading = isLoading => ({
+  type: 'SET_IS_LOADING',
+  isLoading
+});
 // CONCATENATED MODULE: ./src/scripts/choices.js
-function choices_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function choices_createClass(Constructor, protoProps, staticProps) { if (protoProps) choices_defineProperties(Constructor.prototype, protoProps); if (staticProps) choices_defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 
@@ -3324,7 +3168,7 @@ function choices_createClass(Constructor, protoProps, staticProps) { if (protoPr
 
 /** @see {@link http://browserhacks.com/#hack-acea075d0ac6954f275a70023906050c} */
 
-var IS_IE11 = '-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style;
+const IS_IE11 = '-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style;
 /**
  * @typedef {import('../../types/index').Choices.Choice} Choice
  * @typedef {import('../../types/index').Choices.Item} Item
@@ -3334,39 +3178,32 @@ var IS_IE11 = '-ms-scroll-limit' in document.documentElement.style && '-ms-ime-a
 
 /** @type {Partial<Options>} */
 
-var USER_DEFAULTS = {};
+const USER_DEFAULTS = {};
 /**
  * Choices
  * @author Josh Johnson<josh@joshuajohnson.co.uk>
  */
 
-var choices_Choices =
-/*#__PURE__*/
-function () {
-  choices_createClass(Choices, null, [{
-    key: "defaults",
-    get: function get() {
-      return Object.preventExtensions({
-        get options() {
-          return USER_DEFAULTS;
-        },
+class choices_Choices {
+  static get defaults() {
+    return Object.preventExtensions({
+      get options() {
+        return USER_DEFAULTS;
+      },
 
-        get templates() {
-          return TEMPLATES;
-        }
+      get templates() {
+        return TEMPLATES;
+      }
 
-      });
-    }
-    /**
-     * @param {string | HTMLInputElement | HTMLSelectElement} element
-     * @param {Partial<Options>} userConfig
-     */
+    });
+  }
+  /**
+   * @param {string | HTMLInputElement | HTMLSelectElement} element
+   * @param {Partial<Options>} userConfig
+   */
 
-  }]);
 
-  function Choices(element, userConfig) {
-    var _this = this;
-
+  constructor(element, userConfig) {
     if (element === void 0) {
       element = '[data-choice]';
     }
@@ -3376,20 +3213,18 @@ function () {
     }
 
     /** @type {Partial<Options>} */
-    this.config = cjs_default.a.all([DEFAULT_CONFIG, Choices.defaults.options, userConfig], // When merging array configs, replace with a copy of the userConfig array,
+    this.config = cjs_default.a.all([DEFAULT_CONFIG, choices_Choices.defaults.options, userConfig], // When merging array configs, replace with a copy of the userConfig array,
     // instead of concatenating with the default array
     {
-      arrayMerge: function arrayMerge(_, sourceArray) {
-        return [].concat(sourceArray);
-      }
+      arrayMerge: (_, sourceArray) => [...sourceArray]
     });
-    var invalidConfigOptions = diff(this.config, DEFAULT_CONFIG);
+    const invalidConfigOptions = diff(this.config, DEFAULT_CONFIG);
 
     if (invalidConfigOptions.length) {
       console.warn('Unknown config option(s) passed', invalidConfigOptions.join(', '));
     }
 
-    var passedElement = typeof element === 'string' ? document.querySelector(element) : element;
+    const passedElement = typeof element === 'string' ? document.querySelector(element) : element;
 
     if (!(passedElement instanceof HTMLInputElement || passedElement instanceof HTMLSelectElement)) {
       throw TypeError('Expected one of the following types text|select-one|select-multiple');
@@ -3406,23 +3241,21 @@ function () {
     }
 
     if (userConfig.addItemFilter && typeof userConfig.addItemFilter !== 'function') {
-      var re = userConfig.addItemFilter instanceof RegExp ? userConfig.addItemFilter : new RegExp(userConfig.addItemFilter);
+      const re = userConfig.addItemFilter instanceof RegExp ? userConfig.addItemFilter : new RegExp(userConfig.addItemFilter);
       this.config.addItemFilter = re.test.bind(re);
     }
 
     if (this._isTextElement) {
-      this.passedElement = new WrappedInput({
+      this.passedElement = new wrapped_input_WrappedInput({
         element: passedElement,
         classNames: this.config.classNames,
         delimiter: this.config.delimiter
       });
     } else {
-      this.passedElement = new WrappedSelect({
+      this.passedElement = new wrapped_select_WrappedSelect({
         element: passedElement,
         classNames: this.config.classNames,
-        template: function template(data) {
-          return _this._templates.option(data);
-        }
+        template: data => this._templates.option(data)
       });
     }
 
@@ -3447,11 +3280,12 @@ function () {
     this._direction = this.passedElement.dir;
 
     if (!this._direction) {
-      var _window$getComputedSt = window.getComputedStyle(this.passedElement.element),
-          elementDirection = _window$getComputedSt.direction;
-
-      var _window$getComputedSt2 = window.getComputedStyle(document.documentElement),
-          documentDirection = _window$getComputedSt2.direction;
+      const {
+        direction: elementDirection
+      } = window.getComputedStyle(this.passedElement.element);
+      const {
+        direction: documentDirection
+      } = window.getComputedStyle(document.documentElement);
 
       if (elementDirection !== documentDirection) {
         this._direction = elementDirection;
@@ -3476,14 +3310,22 @@ function () {
 
 
     if (this.passedElement.options) {
-      this.passedElement.options.forEach(function (o) {
-        _this._presetChoices.push({
+      this.passedElement.options.forEach(o => {
+        let pomCustomProperties = o.getAttribute('data-custom-properties');
+
+        try {
+          pomCustomProperties = JSON.parse(pomCustomProperties);
+        } catch (e) {
+          /* empty */
+        }
+
+        this._presetChoices.push({
           value: o.value,
           label: o.innerHTML,
           selected: o.selected,
           disabled: o.disabled || o.parentNode.disabled,
           placeholder: o.value === '' || o.hasAttribute('placeholder'),
-          customProperties: o.getAttribute('data-custom-properties')
+          customProperties: pomCustomProperties
         });
       });
     }
@@ -3518,9 +3360,7 @@ function () {
     this.init();
   }
 
-  var _proto = Choices.prototype;
-
-  _proto.init = function init() {
+  init() {
     if (this.initialised) {
       return;
     }
@@ -3541,21 +3381,23 @@ function () {
 
     this._addEventListeners();
 
-    var shouldDisable = !this.config.addItems || this.passedElement.element.hasAttribute('disabled');
+    const shouldDisable = !this.config.addItems || this.passedElement.element.hasAttribute('disabled');
 
     if (shouldDisable) {
       this.disable();
     }
 
     this.initialised = true;
-    var callbackOnInit = this.config.callbackOnInit; // Run callback if it is a function
+    const {
+      callbackOnInit
+    } = this.config; // Run callback if it is a function
 
     if (callbackOnInit && typeof callbackOnInit === 'function') {
       callbackOnInit.call(this);
     }
-  };
+  }
 
-  _proto.destroy = function destroy() {
+  destroy() {
     if (!this.initialised) {
       return;
     }
@@ -3572,9 +3414,9 @@ function () {
 
     this._templates = null;
     this.initialised = false;
-  };
+  }
 
-  _proto.enable = function enable() {
+  enable() {
     if (this.passedElement.isDisabled) {
       this.passedElement.enable();
     }
@@ -3587,9 +3429,9 @@ function () {
     }
 
     return this;
-  };
+  }
 
-  _proto.disable = function disable() {
+  disable() {
     if (!this.passedElement.isDisabled) {
       this.passedElement.disable();
     }
@@ -3602,9 +3444,9 @@ function () {
     }
 
     return this;
-  };
+  }
 
-  _proto.highlightItem = function highlightItem(item, runEvent) {
+  highlightItem(item, runEvent) {
     if (runEvent === void 0) {
       runEvent = true;
     }
@@ -3613,170 +3455,143 @@ function () {
       return this;
     }
 
-    var id = item.id,
-        _item$groupId = item.groupId,
-        groupId = _item$groupId === void 0 ? -1 : _item$groupId,
-        _item$value = item.value,
-        value = _item$value === void 0 ? '' : _item$value,
-        _item$label = item.label,
-        label = _item$label === void 0 ? '' : _item$label;
-    var group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
+    const {
+      id,
+      groupId = -1,
+      value = '',
+      label = ''
+    } = item;
+    const group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
 
-    this._store.dispatch(items_highlightItem(id, true));
+    this._store.dispatch(highlightItem(id, true));
 
     if (runEvent) {
       this.passedElement.triggerEvent(EVENTS.highlightItem, {
-        id: id,
-        value: value,
-        label: label,
+        id,
+        value,
+        label,
         groupValue: group && group.value ? group.value : null
       });
     }
 
     return this;
-  };
+  }
 
-  _proto.unhighlightItem = function unhighlightItem(item) {
+  unhighlightItem(item) {
     if (!item) {
       return this;
     }
 
-    var id = item.id,
-        _item$groupId2 = item.groupId,
-        groupId = _item$groupId2 === void 0 ? -1 : _item$groupId2,
-        _item$value2 = item.value,
-        value = _item$value2 === void 0 ? '' : _item$value2,
-        _item$label2 = item.label,
-        label = _item$label2 === void 0 ? '' : _item$label2;
-    var group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
+    const {
+      id,
+      groupId = -1,
+      value = '',
+      label = ''
+    } = item;
+    const group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
 
-    this._store.dispatch(items_highlightItem(id, false));
+    this._store.dispatch(highlightItem(id, false));
 
     this.passedElement.triggerEvent(EVENTS.highlightItem, {
-      id: id,
-      value: value,
-      label: label,
+      id,
+      value,
+      label,
       groupValue: group && group.value ? group.value : null
     });
     return this;
-  };
+  }
 
-  _proto.highlightAll = function highlightAll() {
-    var _this2 = this;
-
-    this._store.items.forEach(function (item) {
-      return _this2.highlightItem(item);
-    });
+  highlightAll() {
+    this._store.items.forEach(item => this.highlightItem(item));
 
     return this;
-  };
+  }
 
-  _proto.unhighlightAll = function unhighlightAll() {
-    var _this3 = this;
-
-    this._store.items.forEach(function (item) {
-      return _this3.unhighlightItem(item);
-    });
+  unhighlightAll() {
+    this._store.items.forEach(item => this.unhighlightItem(item));
 
     return this;
-  };
+  }
 
-  _proto.removeActiveItemsByValue = function removeActiveItemsByValue(value) {
-    var _this4 = this;
-
-    this._store.activeItems.filter(function (item) {
-      return item.value === value;
-    }).forEach(function (item) {
-      return _this4._removeItem(item);
-    });
+  removeActiveItemsByValue(value) {
+    this._store.activeItems.filter(item => item.value === value).forEach(item => this._removeItem(item));
 
     return this;
-  };
+  }
 
-  _proto.removeActiveItems = function removeActiveItems(excludedId) {
-    var _this5 = this;
-
-    this._store.activeItems.filter(function (_ref) {
-      var id = _ref.id;
+  removeActiveItems(excludedId) {
+    this._store.activeItems.filter(_ref => {
+      let {
+        id
+      } = _ref;
       return id !== excludedId;
-    }).forEach(function (item) {
-      return _this5._removeItem(item);
-    });
+    }).forEach(item => this._removeItem(item));
 
     return this;
-  };
+  }
 
-  _proto.removeHighlightedItems = function removeHighlightedItems(runEvent) {
-    var _this6 = this;
-
+  removeHighlightedItems(runEvent) {
     if (runEvent === void 0) {
       runEvent = false;
     }
 
-    this._store.highlightedActiveItems.forEach(function (item) {
-      _this6._removeItem(item); // If this action was performed by the user
+    this._store.highlightedActiveItems.forEach(item => {
+      this._removeItem(item); // If this action was performed by the user
       // trigger the event
 
 
       if (runEvent) {
-        _this6._triggerChange(item.value);
+        this._triggerChange(item.value);
       }
     });
 
     return this;
-  };
+  }
 
-  _proto.showDropdown = function showDropdown(preventInputFocus) {
-    var _this7 = this;
-
+  showDropdown(preventInputFocus) {
     if (this.dropdown.isActive) {
       return this;
     }
 
-    requestAnimationFrame(function () {
-      _this7.dropdown.show();
+    requestAnimationFrame(() => {
+      this.dropdown.show();
+      this.containerOuter.open(this.dropdown.distanceFromTopWindow);
 
-      _this7.containerOuter.open(_this7.dropdown.distanceFromTopWindow);
-
-      if (!preventInputFocus && _this7._canSearch) {
-        _this7.input.focus();
+      if (!preventInputFocus && this._canSearch) {
+        this.input.focus();
       }
 
-      _this7.passedElement.triggerEvent(EVENTS.showDropdown, {});
+      this.passedElement.triggerEvent(EVENTS.showDropdown, {});
     });
     return this;
-  };
+  }
 
-  _proto.hideDropdown = function hideDropdown(preventInputBlur) {
-    var _this8 = this;
-
+  hideDropdown(preventInputBlur) {
     if (!this.dropdown.isActive) {
       return this;
     }
 
-    requestAnimationFrame(function () {
-      _this8.dropdown.hide();
+    requestAnimationFrame(() => {
+      this.dropdown.hide();
+      this.containerOuter.close();
 
-      _this8.containerOuter.close();
-
-      if (!preventInputBlur && _this8._canSearch) {
-        _this8.input.removeActiveDescendant();
-
-        _this8.input.blur();
+      if (!preventInputBlur && this._canSearch) {
+        this.input.removeActiveDescendant();
+        this.input.blur();
       }
 
-      _this8.passedElement.triggerEvent(EVENTS.hideDropdown, {});
+      this.passedElement.triggerEvent(EVENTS.hideDropdown, {});
     });
     return this;
-  };
+  }
 
-  _proto.getValue = function getValue(valueOnly) {
+  getValue(valueOnly) {
     if (valueOnly === void 0) {
       valueOnly = false;
     }
 
-    var values = this._store.activeItems.reduce(function (selectedItems, item) {
-      var itemValue = valueOnly ? item.value : item;
+    const values = this._store.activeItems.reduce((selectedItems, item) => {
+      const itemValue = valueOnly ? item.value : item;
       selectedItems.push(itemValue);
       return selectedItems;
     }, []);
@@ -3786,34 +3601,26 @@ function () {
   /**
    * @param {string[] | import('../../types/index').Choices.Item[]} items
    */
-  ;
 
-  _proto.setValue = function setValue(items) {
-    var _this9 = this;
 
+  setValue(items) {
     if (!this.initialised) {
       return this;
     }
 
-    items.forEach(function (value) {
-      return _this9._setChoiceOrItem(value);
-    });
+    items.forEach(value => this._setChoiceOrItem(value));
     return this;
-  };
+  }
 
-  _proto.setChoiceByValue = function setChoiceByValue(value) {
-    var _this10 = this;
-
+  setChoiceByValue(value) {
     if (!this.initialised || this._isTextElement) {
       return this;
     } // If only one value has been passed, convert to array
 
 
-    var choiceValue = Array.isArray(value) ? value : [value]; // Loop through each value and
+    const choiceValue = Array.isArray(value) ? value : [value]; // Loop through each value and
 
-    choiceValue.forEach(function (val) {
-      return _this10._findAndSelectChoiceByValue(val);
-    });
+    choiceValue.forEach(val => this._findAndSelectChoiceByValue(val));
     return this;
   }
   /**
@@ -3886,11 +3693,9 @@ function () {
    * }], 'value', 'label', false);
    * ```
    */
-  ;
 
-  _proto.setChoices = function setChoices(choicesArrayOrFetcher, value, label, replaceChoices) {
-    var _this11 = this;
 
+  setChoices(choicesArrayOrFetcher, value, label, replaceChoices) {
     if (choicesArrayOrFetcher === void 0) {
       choicesArrayOrFetcher = [];
     }
@@ -3908,15 +3713,15 @@ function () {
     }
 
     if (!this.initialised) {
-      throw new ReferenceError("setChoices was called on a non-initialized instance of Choices");
+      throw new ReferenceError(`setChoices was called on a non-initialized instance of Choices`);
     }
 
     if (!this._isSelectElement) {
-      throw new TypeError("setChoices can't be used with INPUT based Choices");
+      throw new TypeError(`setChoices can't be used with INPUT based Choices`);
     }
 
     if (typeof value !== 'string' || !value) {
-      throw new TypeError("value parameter must be a name of 'value' field in passed objects");
+      throw new TypeError(`value parameter must be a name of 'value' field in passed objects`);
     } // Clear choices if needed
 
 
@@ -3926,33 +3731,21 @@ function () {
 
     if (typeof choicesArrayOrFetcher === 'function') {
       // it's a choices fetcher function
-      var fetcher = choicesArrayOrFetcher(this);
+      const fetcher = choicesArrayOrFetcher(this);
 
       if (typeof Promise === 'function' && fetcher instanceof Promise) {
         // that's a promise
         // eslint-disable-next-line compat/compat
-        return new Promise(function (resolve) {
-          return requestAnimationFrame(resolve);
-        }).then(function () {
-          return _this11._handleLoadingState(true);
-        }).then(function () {
-          return fetcher;
-        }).then(function (data) {
-          return _this11.setChoices(data, value, label, replaceChoices);
-        }).catch(function (err) {
-          if (!_this11.config.silent) {
+        return new Promise(resolve => requestAnimationFrame(resolve)).then(() => this._handleLoadingState(true)).then(() => fetcher).then(data => this.setChoices(data, value, label, replaceChoices)).catch(err => {
+          if (!this.config.silent) {
             console.error(err);
           }
-        }).then(function () {
-          return _this11._handleLoadingState(false);
-        }).then(function () {
-          return _this11;
-        });
+        }).then(() => this._handleLoadingState(false)).then(() => this);
       } // function returned something else than promise, let's check if it's an array of choices
 
 
       if (!Array.isArray(fetcher)) {
-        throw new TypeError(".setChoices first argument function must return either array of choices or Promise, got: " + typeof fetcher);
+        throw new TypeError(`.setChoices first argument function must return either array of choices or Promise, got: ${typeof fetcher}`);
       } // recursion with results, it's sync and choices were cleared already
 
 
@@ -3960,23 +3753,23 @@ function () {
     }
 
     if (!Array.isArray(choicesArrayOrFetcher)) {
-      throw new TypeError(".setChoices must be called either with array of choices with a function resulting into Promise of array of choices");
+      throw new TypeError(`.setChoices must be called either with array of choices with a function resulting into Promise of array of choices`);
     }
 
     this.containerOuter.removeLoadingState();
 
     this._startLoading();
 
-    choicesArrayOrFetcher.forEach(function (groupOrChoice) {
+    choicesArrayOrFetcher.forEach(groupOrChoice => {
       if (groupOrChoice.choices) {
-        _this11._addGroup({
+        this._addGroup({
           id: parseInt(groupOrChoice.id, 10) || null,
           group: groupOrChoice,
           valueKey: value,
           labelKey: label
         });
       } else {
-        _this11._addChoice({
+        this._addChoice({
           value: groupOrChoice[value],
           label: groupOrChoice[label],
           isSelected: groupOrChoice.selected,
@@ -3990,21 +3783,21 @@ function () {
     this._stopLoading();
 
     return this;
-  };
+  }
 
-  _proto.clearChoices = function clearChoices() {
-    this._store.dispatch(choices_clearChoices());
+  clearChoices() {
+    this._store.dispatch(clearChoices());
 
     return this;
-  };
+  }
 
-  _proto.clearStore = function clearStore() {
+  clearStore() {
     this._store.dispatch(clearAll());
 
     return this;
-  };
+  }
 
-  _proto.clearSelection = function clearSelection() {
+  clearSelection() {
     this.removeActiveItems(-1);
 
     this._addItem({
@@ -4014,30 +3807,30 @@ function () {
     });
 
     return this;
-  };
+  }
 
-  _proto.clearInput = function clearInput() {
-    var shouldSetInputWidth = !this._isSelectOneElement;
+  clearInput() {
+    const shouldSetInputWidth = !this._isSelectOneElement;
     this.input.clear(shouldSetInputWidth);
 
     if (!this._isTextElement && this._canSearch) {
       this._isSearching = false;
 
-      this._store.dispatch(choices_activateChoices(true));
+      this._store.dispatch(activateChoices(true));
     }
 
     return this;
-  };
+  }
 
-  _proto._render = function _render() {
+  _render() {
     if (this._store.isLoading()) {
       return;
     }
 
     this._currentState = this._store.state;
-    var stateChanged = this._currentState.choices !== this._prevState.choices || this._currentState.groups !== this._prevState.groups || this._currentState.items !== this._prevState.items;
-    var shouldRenderChoices = this._isSelectElement;
-    var shouldRenderItems = this._currentState.items !== this._prevState.items;
+    const stateChanged = this._currentState.choices !== this._prevState.choices || this._currentState.groups !== this._prevState.groups || this._currentState.items !== this._prevState.items;
+    const shouldRenderChoices = this._isSelectElement;
+    const shouldRenderItems = this._currentState.items !== this._prevState.items;
 
     if (!stateChanged) {
       return;
@@ -4052,29 +3845,24 @@ function () {
     }
 
     this._prevState = this._currentState;
-  };
+  }
 
-  _proto._renderChoices = function _renderChoices() {
-    var _this12 = this;
-
-    var _this$_store = this._store,
-        activeGroups = _this$_store.activeGroups,
-        activeChoices = _this$_store.activeChoices;
-    var choiceListFragment = document.createDocumentFragment();
+  _renderChoices() {
+    const {
+      activeGroups,
+      activeChoices
+    } = this._store;
+    let choiceListFragment = document.createDocumentFragment();
     this.choiceList.clear();
 
     if (this.config.resetScrollPosition) {
-      requestAnimationFrame(function () {
-        return _this12.choiceList.scrollToTop();
-      });
+      requestAnimationFrame(() => this.choiceList.scrollToTop());
     } // If we have grouped options
 
 
     if (activeGroups.length >= 1 && !this._isSearching) {
       // If we have a placeholder choice along with groups
-      var activePlaceholders = activeChoices.filter(function (activeChoice) {
-        return activeChoice.placeholder === true && activeChoice.groupId === -1;
-      });
+      const activePlaceholders = activeChoices.filter(activeChoice => activeChoice.placeholder === true && activeChoice.groupId === -1);
 
       if (activePlaceholders.length >= 1) {
         choiceListFragment = this._createChoicesFragment(activePlaceholders, choiceListFragment);
@@ -4087,9 +3875,11 @@ function () {
 
 
     if (choiceListFragment.childNodes && choiceListFragment.childNodes.length > 0) {
-      var activeItems = this._store.activeItems;
+      const {
+        activeItems
+      } = this._store;
 
-      var canAddItem = this._canAddItem(activeItems, this.input.value); // ...and we can select them
+      const canAddItem = this._canAddItem(activeItems, this.input.value); // ...and we can select them
 
 
       if (canAddItem.response) {
@@ -4103,8 +3893,8 @@ function () {
       }
     } else {
       // Otherwise show a notice
-      var dropdownItem;
-      var notice;
+      let dropdownItem;
+      let notice;
 
       if (this._isSearching) {
         notice = typeof this.config.noResultsText === 'function' ? this.config.noResultsText() : this.config.noResultsText;
@@ -4116,60 +3906,54 @@ function () {
 
       this.choiceList.append(dropdownItem);
     }
-  };
+  }
 
-  _proto._renderItems = function _renderItems() {
-    var activeItems = this._store.activeItems || [];
+  _renderItems() {
+    const activeItems = this._store.activeItems || [];
     this.itemList.clear(); // Create a fragment to store our list items
     // (so we don't have to update the DOM for each item)
 
-    var itemListFragment = this._createItemsFragment(activeItems); // If we have items to add, append them
+    const itemListFragment = this._createItemsFragment(activeItems); // If we have items to add, append them
 
 
     if (itemListFragment.childNodes) {
       this.itemList.append(itemListFragment);
     }
-  };
+  }
 
-  _proto._createGroupsFragment = function _createGroupsFragment(groups, choices, fragment) {
-    var _this13 = this;
-
+  _createGroupsFragment(groups, choices, fragment) {
     if (fragment === void 0) {
       fragment = document.createDocumentFragment();
     }
 
-    var getGroupChoices = function getGroupChoices(group) {
-      return choices.filter(function (choice) {
-        if (_this13._isSelectOneElement) {
-          return choice.groupId === group.id;
-        }
+    const getGroupChoices = group => choices.filter(choice => {
+      if (this._isSelectOneElement) {
+        return choice.groupId === group.id;
+      }
 
-        return choice.groupId === group.id && (_this13.config.renderSelectedChoices === 'always' || !choice.selected);
-      });
-    }; // If sorting is enabled, filter groups
+      return choice.groupId === group.id && (this.config.renderSelectedChoices === 'always' || !choice.selected);
+    }); // If sorting is enabled, filter groups
 
 
     if (this.config.shouldSort) {
       groups.sort(this.config.sorter);
     }
 
-    groups.forEach(function (group) {
-      var groupChoices = getGroupChoices(group);
+    groups.forEach(group => {
+      const groupChoices = getGroupChoices(group);
 
       if (groupChoices.length >= 1) {
-        var dropdownGroup = _this13._getTemplate('choiceGroup', group);
+        const dropdownGroup = this._getTemplate('choiceGroup', group);
 
         fragment.appendChild(dropdownGroup);
 
-        _this13._createChoicesFragment(groupChoices, fragment, true);
+        this._createChoicesFragment(groupChoices, fragment, true);
       }
     });
     return fragment;
-  };
+  }
 
-  _proto._createChoicesFragment = function _createChoicesFragment(choices, fragment, withinGroup) {
-    var _this14 = this;
-
+  _createChoicesFragment(choices, fragment, withinGroup) {
     if (fragment === void 0) {
       fragment = document.createDocumentFragment();
     }
@@ -4179,32 +3963,34 @@ function () {
     }
 
     // Create a fragment to store our list items (so we don't have to update the DOM for each item)
-    var _this$config = this.config,
-        renderSelectedChoices = _this$config.renderSelectedChoices,
-        searchResultLimit = _this$config.searchResultLimit,
-        renderChoiceLimit = _this$config.renderChoiceLimit;
-    var filter = this._isSearching ? sortByScore : this.config.sorter;
+    const {
+      renderSelectedChoices,
+      searchResultLimit,
+      renderChoiceLimit
+    } = this.config;
+    const filter = this._isSearching ? sortByScore : this.config.sorter;
 
-    var appendChoice = function appendChoice(choice) {
-      var shouldRender = renderSelectedChoices === 'auto' ? _this14._isSelectOneElement || !choice.selected : true;
+    const appendChoice = choice => {
+      const shouldRender = renderSelectedChoices === 'auto' ? this._isSelectOneElement || !choice.selected : true;
 
       if (shouldRender) {
-        var dropdownItem = _this14._getTemplate('choice', choice, _this14.config.itemSelectText);
+        const dropdownItem = this._getTemplate('choice', choice, this.config.itemSelectText);
 
         fragment.appendChild(dropdownItem);
       }
     };
 
-    var rendererableChoices = choices;
+    let rendererableChoices = choices;
 
     if (renderSelectedChoices === 'auto' && !this._isSelectOneElement) {
-      rendererableChoices = choices.filter(function (choice) {
-        return !choice.selected;
-      });
+      rendererableChoices = choices.filter(choice => !choice.selected);
     } // Split array into placeholders and "normal" choices
 
 
-    var _rendererableChoices$ = rendererableChoices.reduce(function (acc, choice) {
+    const {
+      placeholderChoices,
+      normalChoices
+    } = rendererableChoices.reduce((acc, choice) => {
       if (choice.placeholder) {
         acc.placeholderChoices.push(choice);
       } else {
@@ -4215,18 +4001,15 @@ function () {
     }, {
       placeholderChoices: [],
       normalChoices: []
-    }),
-        placeholderChoices = _rendererableChoices$.placeholderChoices,
-        normalChoices = _rendererableChoices$.normalChoices; // If sorting is enabled or the user is searching, filter choices
-
+    }); // If sorting is enabled or the user is searching, filter choices
 
     if (this.config.shouldSort || this._isSearching) {
       normalChoices.sort(filter);
     }
 
-    var choiceLimit = rendererableChoices.length; // Prepend placeholeder
+    let choiceLimit = rendererableChoices.length; // Prepend placeholeder
 
-    var sortedChoices = this._isSelectOneElement ? [].concat(placeholderChoices, normalChoices) : normalChoices;
+    const sortedChoices = this._isSelectOneElement ? [...placeholderChoices, ...normalChoices] : normalChoices;
 
     if (this._isSearching) {
       choiceLimit = searchResultLimit;
@@ -4235,27 +4018,26 @@ function () {
     } // Add each choice to dropdown within range
 
 
-    for (var i = 0; i < choiceLimit; i += 1) {
+    for (let i = 0; i < choiceLimit; i += 1) {
       if (sortedChoices[i]) {
         appendChoice(sortedChoices[i]);
       }
     }
 
     return fragment;
-  };
+  }
 
-  _proto._createItemsFragment = function _createItemsFragment(items, fragment) {
-    var _this15 = this;
-
+  _createItemsFragment(items, fragment) {
     if (fragment === void 0) {
       fragment = document.createDocumentFragment();
     }
 
     // Create fragment to add elements to
-    var _this$config2 = this.config,
-        shouldSortItems = _this$config2.shouldSortItems,
-        sorter = _this$config2.sorter,
-        removeItemButton = _this$config2.removeItemButton; // If sorting is enabled, filter items
+    const {
+      shouldSortItems,
+      sorter,
+      removeItemButton
+    } = this.config; // If sorting is enabled, filter items
 
     if (shouldSortItems && !this._isSelectOneElement) {
       items.sort(sorter);
@@ -4269,9 +4051,9 @@ function () {
       this.passedElement.options = items;
     }
 
-    var addItemToFragment = function addItemToFragment(item) {
+    const addItemToFragment = item => {
       // Create new list element
-      var listItem = _this15._getTemplate('item', item, removeItemButton); // Append it to list
+      const listItem = this._getTemplate('item', item, removeItemButton); // Append it to list
 
 
       fragment.appendChild(listItem);
@@ -4280,20 +4062,22 @@ function () {
 
     items.forEach(addItemToFragment);
     return fragment;
-  };
+  }
 
-  _proto._triggerChange = function _triggerChange(value) {
+  _triggerChange(value) {
     if (value === undefined || value === null) {
       return;
     }
 
     this.passedElement.triggerEvent(EVENTS.change, {
-      value: value
+      value
     });
-  };
+  }
 
-  _proto._selectPlaceholderChoice = function _selectPlaceholderChoice() {
-    var placeholderChoice = this._store.placeholderChoice;
+  _selectPlaceholderChoice() {
+    const {
+      placeholderChoice
+    } = this._store;
 
     if (placeholderChoice) {
       this._addItem({
@@ -4306,17 +4090,15 @@ function () {
 
       this._triggerChange(placeholderChoice.value);
     }
-  };
+  }
 
-  _proto._handleButtonAction = function _handleButtonAction(activeItems, element) {
+  _handleButtonAction(activeItems, element) {
     if (!activeItems || !element || !this.config.removeItems || !this.config.removeItemButton) {
       return;
     }
 
-    var itemId = element.parentNode.getAttribute('data-id');
-    var itemToRemove = activeItems.find(function (item) {
-      return item.id === parseInt(itemId, 10);
-    }); // Remove item associated with button
+    const itemId = element.parentNode.getAttribute('data-id');
+    const itemToRemove = activeItems.find(item => item.id === parseInt(itemId, 10)); // Remove item associated with button
 
     this._removeItem(itemToRemove);
 
@@ -4325,11 +4107,9 @@ function () {
     if (this._isSelectOneElement) {
       this._selectPlaceholderChoice();
     }
-  };
+  }
 
-  _proto._handleItemAction = function _handleItemAction(activeItems, element, hasShiftKey) {
-    var _this16 = this;
-
+  _handleItemAction(activeItems, element, hasShiftKey) {
     if (hasShiftKey === void 0) {
       hasShiftKey = false;
     }
@@ -4338,46 +4118,48 @@ function () {
       return;
     }
 
-    var passedId = element.getAttribute('data-id'); // We only want to select one item with a click
+    const passedId = element.getAttribute('data-id'); // We only want to select one item with a click
     // so we deselect any items that aren't the target
     // unless shift is being pressed
 
-    activeItems.forEach(function (item) {
+    activeItems.forEach(item => {
       if (item.id === parseInt(passedId, 10) && !item.highlighted) {
-        _this16.highlightItem(item);
+        this.highlightItem(item);
       } else if (!hasShiftKey && item.highlighted) {
-        _this16.unhighlightItem(item);
+        this.unhighlightItem(item);
       }
     }); // Focus input as without focus, a user cannot do anything with a
     // highlighted item
 
     this.input.focus();
-  };
+  }
 
-  _proto._handleChoiceAction = function _handleChoiceAction(activeItems, element) {
+  _handleChoiceAction(activeItems, element) {
     if (!activeItems || !element) {
       return;
     } // If we are clicking on an option
 
 
-    var id = element.dataset.id;
+    const {
+      id
+    } = element.dataset;
 
-    var choice = this._store.getChoiceById(id);
+    const choice = this._store.getChoiceById(id);
 
     if (!choice) {
       return;
     }
 
-    var passedKeyCode = activeItems[0] && activeItems[0].keyCode ? activeItems[0].keyCode : null;
-    var hasActiveDropdown = this.dropdown.isActive; // Update choice keyCode
+    const passedKeyCode = activeItems[0] && activeItems[0].keyCode ? activeItems[0].keyCode : null;
+    const hasActiveDropdown = this.dropdown.isActive; // Update choice keyCode
 
     choice.keyCode = passedKeyCode;
     this.passedElement.triggerEvent(EVENTS.choice, {
-      choice: choice
+      choice
     });
 
     if (!choice.selected && !choice.disabled) {
-      var canAddItem = this._canAddItem(activeItems, choice.value);
+      const canAddItem = this._canAddItem(activeItems, choice.value);
 
       if (canAddItem.response) {
         this._addItem({
@@ -4400,17 +4182,15 @@ function () {
       this.hideDropdown(true);
       this.containerOuter.focus();
     }
-  };
+  }
 
-  _proto._handleBackspace = function _handleBackspace(activeItems) {
+  _handleBackspace(activeItems) {
     if (!this.config.removeItems || !activeItems) {
       return;
     }
 
-    var lastItem = activeItems[activeItems.length - 1];
-    var hasHighlightedItems = activeItems.some(function (item) {
-      return item.highlighted;
-    }); // If editing the last item is allowed and there are not other selected items,
+    const lastItem = activeItems[activeItems.length - 1];
+    const hasHighlightedItems = activeItems.some(item => item.highlighted); // If editing the last item is allowed and there are not other selected items,
     // we can edit the item value. Otherwise if we can remove items, remove all selected items
 
     if (this.config.editItems && !hasHighlightedItems && lastItem) {
@@ -4428,22 +4208,22 @@ function () {
 
       this.removeHighlightedItems(true);
     }
-  };
+  }
 
-  _proto._startLoading = function _startLoading() {
+  _startLoading() {
     this._store.dispatch(setIsLoading(true));
-  };
+  }
 
-  _proto._stopLoading = function _stopLoading() {
+  _stopLoading() {
     this._store.dispatch(setIsLoading(false));
-  };
+  }
 
-  _proto._handleLoadingState = function _handleLoadingState(setLoading) {
+  _handleLoadingState(setLoading) {
     if (setLoading === void 0) {
       setLoading = true;
     }
 
-    var placeholderItem = this.itemList.getChild("." + this.config.classNames.placeholder);
+    let placeholderItem = this.itemList.getChild(`.${this.config.classNames.placeholder}`);
 
     if (setLoading) {
       this.disable();
@@ -4469,42 +4249,43 @@ function () {
         this.input.placeholder = this._placeholderValue || '';
       }
     }
-  };
+  }
 
-  _proto._handleSearch = function _handleSearch(value) {
+  _handleSearch(value) {
     if (!value || !this.input.isFocussed) {
       return;
     }
 
-    var choices = this._store.choices;
-    var _this$config3 = this.config,
-        searchFloor = _this$config3.searchFloor,
-        searchChoices = _this$config3.searchChoices;
-    var hasUnactiveChoices = choices.some(function (option) {
-      return !option.active;
-    }); // Check that we have a value to search and the input was an alphanumeric character
+    const {
+      choices
+    } = this._store;
+    const {
+      searchFloor,
+      searchChoices
+    } = this.config;
+    const hasUnactiveChoices = choices.some(option => !option.active); // Check that we have a value to search and the input was an alphanumeric character
 
     if (value && value.length >= searchFloor) {
-      var resultCount = searchChoices ? this._searchChoices(value) : 0; // Trigger search event
+      const resultCount = searchChoices ? this._searchChoices(value) : 0; // Trigger search event
 
       this.passedElement.triggerEvent(EVENTS.search, {
-        value: value,
-        resultCount: resultCount
+        value,
+        resultCount
       });
     } else if (hasUnactiveChoices) {
       // Otherwise reset choices to active
       this._isSearching = false;
 
-      this._store.dispatch(choices_activateChoices(true));
+      this._store.dispatch(activateChoices(true));
     }
-  };
+  }
 
-  _proto._canAddItem = function _canAddItem(activeItems, value) {
-    var canAddItem = true;
-    var notice = typeof this.config.addItemText === 'function' ? this.config.addItemText(value) : this.config.addItemText;
+  _canAddItem(activeItems, value) {
+    let canAddItem = true;
+    let notice = typeof this.config.addItemText === 'function' ? this.config.addItemText(value) : this.config.addItemText;
 
     if (!this._isSelectOneElement) {
-      var isDuplicateValue = existsInArray(activeItems, value);
+      const isDuplicateValue = existsInArray(activeItems, value);
 
       if (this.config.maxItemCount > 0 && this.config.maxItemCount <= activeItems.length) {
         // If there is a max entry limit and we have reached that limit
@@ -4526,39 +4307,40 @@ function () {
 
     return {
       response: canAddItem,
-      notice: notice
+      notice
     };
-  };
+  }
 
-  _proto._searchChoices = function _searchChoices(value) {
-    var newValue = typeof value === 'string' ? value.trim() : value;
-    var currentValue = typeof this._currentValue === 'string' ? this._currentValue.trim() : this._currentValue;
+  _searchChoices(value) {
+    const newValue = typeof value === 'string' ? value.trim() : value;
+    const currentValue = typeof this._currentValue === 'string' ? this._currentValue.trim() : this._currentValue;
 
-    if (newValue.length < 1 && newValue === currentValue + " ") {
+    if (newValue.length < 1 && newValue === `${currentValue} `) {
       return 0;
     } // If new value matches the desired length and is not the same as the current value with a space
 
 
-    var haystack = this._store.searchableChoices;
-    var needle = newValue;
-    var keys = [].concat(this.config.searchFields);
-    var options = Object.assign(this.config.fuseOptions, {
-      keys: keys
+    const haystack = this._store.searchableChoices;
+    const needle = newValue;
+    const keys = [...this.config.searchFields];
+    const options = Object.assign(this.config.fuseOptions, {
+      keys
     });
-    var fuse = new fuse_default.a(haystack, options);
-    var results = fuse.search(needle);
+    const fuse = new fuse_default.a(haystack, options);
+    const results = fuse.search(needle);
     this._currentValue = newValue;
     this._highlightPosition = 0;
     this._isSearching = true;
 
-    this._store.dispatch(choices_filterChoices(results));
+    this._store.dispatch(filterChoices(results));
 
     return results.length;
-  };
+  }
 
-  _proto._addEventListeners = function _addEventListeners() {
-    var _document = document,
-        documentElement = _document.documentElement; // capture events - can cancel event processing or propagation
+  _addEventListeners() {
+    const {
+      documentElement
+    } = document; // capture events - can cancel event processing or propagation
 
     documentElement.addEventListener('touchend', this._onTouchEnd, true);
     this.containerOuter.element.addEventListener('keydown', this._onKeyDown, true);
@@ -4600,11 +4382,12 @@ function () {
     }
 
     this.input.addEventListeners();
-  };
+  }
 
-  _proto._removeEventListeners = function _removeEventListeners() {
-    var _document2 = document,
-        documentElement = _document2.documentElement;
+  _removeEventListeners() {
+    const {
+      documentElement
+    } = document;
     documentElement.removeEventListener('touchend', this._onTouchEnd, true);
     this.containerOuter.element.removeEventListener('keydown', this._onKeyDown, true);
     this.containerOuter.element.removeEventListener('mousedown', this._onMouseDown, true);
@@ -4630,70 +4413,92 @@ function () {
   /**
    * @param {KeyboardEvent} event
    */
-  ;
 
-  _proto._onKeyDown = function _onKeyDown(event) {
-    var _keyDownActions;
 
-    var target = event.target,
-        keyCode = event.keyCode,
-        ctrlKey = event.ctrlKey,
-        metaKey = event.metaKey;
-    var activeItems = this._store.activeItems;
-    var hasFocusedInput = this.input.isFocussed;
-    var hasActiveDropdown = this.dropdown.isActive;
-    var hasItems = this.itemList.hasChildren();
-    var keyString = String.fromCharCode(keyCode);
-    var BACK_KEY = KEY_CODES.BACK_KEY,
-        DELETE_KEY = KEY_CODES.DELETE_KEY,
-        ENTER_KEY = KEY_CODES.ENTER_KEY,
-        A_KEY = KEY_CODES.A_KEY,
-        ESC_KEY = KEY_CODES.ESC_KEY,
-        UP_KEY = KEY_CODES.UP_KEY,
-        DOWN_KEY = KEY_CODES.DOWN_KEY,
-        PAGE_UP_KEY = KEY_CODES.PAGE_UP_KEY,
-        PAGE_DOWN_KEY = KEY_CODES.PAGE_DOWN_KEY;
-    var hasCtrlDownKeyPressed = ctrlKey || metaKey; // If a user is typing and the dropdown is not active
+  _onKeyDown(event) {
+    const {
+      target,
+      keyCode,
+      ctrlKey,
+      metaKey
+    } = event;
+    const {
+      activeItems
+    } = this._store;
+    const hasFocusedInput = this.input.isFocussed;
+    const hasActiveDropdown = this.dropdown.isActive;
+    const hasItems = this.itemList.hasChildren();
+    const keyString = String.fromCharCode(keyCode);
+    const {
+      BACK_KEY,
+      DELETE_KEY,
+      ENTER_KEY,
+      A_KEY,
+      ESC_KEY,
+      UP_KEY,
+      DOWN_KEY,
+      PAGE_UP_KEY,
+      PAGE_DOWN_KEY
+    } = KEY_CODES;
+    const hasCtrlDownKeyPressed = ctrlKey || metaKey; // If a user is typing and the dropdown is not active
 
     if (!this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
       this.showDropdown();
     } // Map keys to key actions
 
 
-    var keyDownActions = (_keyDownActions = {}, _keyDownActions[A_KEY] = this._onAKey, _keyDownActions[ENTER_KEY] = this._onEnterKey, _keyDownActions[ESC_KEY] = this._onEscapeKey, _keyDownActions[UP_KEY] = this._onDirectionKey, _keyDownActions[PAGE_UP_KEY] = this._onDirectionKey, _keyDownActions[DOWN_KEY] = this._onDirectionKey, _keyDownActions[PAGE_DOWN_KEY] = this._onDirectionKey, _keyDownActions[DELETE_KEY] = this._onDeleteKey, _keyDownActions[BACK_KEY] = this._onDeleteKey, _keyDownActions); // If keycode has a function, run it
+    const keyDownActions = {
+      [A_KEY]: this._onAKey,
+      [ENTER_KEY]: this._onEnterKey,
+      [ESC_KEY]: this._onEscapeKey,
+      [UP_KEY]: this._onDirectionKey,
+      [PAGE_UP_KEY]: this._onDirectionKey,
+      [DOWN_KEY]: this._onDirectionKey,
+      [PAGE_DOWN_KEY]: this._onDirectionKey,
+      [DELETE_KEY]: this._onDeleteKey,
+      [BACK_KEY]: this._onDeleteKey
+    }; // If keycode has a function, run it
 
     if (keyDownActions[keyCode]) {
       keyDownActions[keyCode]({
-        event: event,
-        target: target,
-        keyCode: keyCode,
-        metaKey: metaKey,
-        activeItems: activeItems,
-        hasFocusedInput: hasFocusedInput,
-        hasActiveDropdown: hasActiveDropdown,
-        hasItems: hasItems,
-        hasCtrlDownKeyPressed: hasCtrlDownKeyPressed
+        event,
+        target,
+        keyCode,
+        metaKey,
+        activeItems,
+        hasFocusedInput,
+        hasActiveDropdown,
+        hasItems,
+        hasCtrlDownKeyPressed
       });
     }
-  };
+  }
 
-  _proto._onKeyUp = function _onKeyUp(_ref2) {
-    var target = _ref2.target,
-        keyCode = _ref2.keyCode;
-    var value = this.input.value;
-    var activeItems = this._store.activeItems;
+  _onKeyUp(_ref2) {
+    let {
+      target,
+      keyCode
+    } = _ref2;
+    const {
+      value
+    } = this.input;
+    const {
+      activeItems
+    } = this._store;
 
-    var canAddItem = this._canAddItem(activeItems, value);
+    const canAddItem = this._canAddItem(activeItems, value);
 
-    var backKey = KEY_CODES.BACK_KEY,
-        deleteKey = KEY_CODES.DELETE_KEY; // We are typing into a text input and have a value, we want to show a dropdown
+    const {
+      BACK_KEY: backKey,
+      DELETE_KEY: deleteKey
+    } = KEY_CODES; // We are typing into a text input and have a value, we want to show a dropdown
     // notice. Otherwise hide the dropdown
 
     if (this._isTextElement) {
-      var canShowDropdownNotice = canAddItem.notice && value;
+      const canShowDropdownNotice = canAddItem.notice && value;
 
       if (canShowDropdownNotice) {
-        var dropdownItem = this._getTemplate('notice', canAddItem.notice);
+        const dropdownItem = this._getTemplate('notice', canAddItem.notice);
 
         this.dropdown.element.innerHTML = dropdownItem.outerHTML;
         this.showDropdown(true);
@@ -4701,55 +4506,63 @@ function () {
         this.hideDropdown(true);
       }
     } else {
-      var userHasRemovedValue = (keyCode === backKey || keyCode === deleteKey) && !target.value;
-      var canReactivateChoices = !this._isTextElement && this._isSearching;
-      var canSearch = this._canSearch && canAddItem.response;
+      const userHasRemovedValue = (keyCode === backKey || keyCode === deleteKey) && !target.value;
+      const canReactivateChoices = !this._isTextElement && this._isSearching;
+      const canSearch = this._canSearch && canAddItem.response;
 
       if (userHasRemovedValue && canReactivateChoices) {
         this._isSearching = false;
 
-        this._store.dispatch(choices_activateChoices(true));
+        this._store.dispatch(activateChoices(true));
       } else if (canSearch) {
         this._handleSearch(this.input.value);
       }
     }
 
     this._canSearch = this.config.searchEnabled;
-  };
+  }
 
-  _proto._onAKey = function _onAKey(_ref3) {
-    var hasItems = _ref3.hasItems,
-        hasCtrlDownKeyPressed = _ref3.hasCtrlDownKeyPressed;
+  _onAKey(_ref3) {
+    let {
+      hasItems,
+      hasCtrlDownKeyPressed
+    } = _ref3;
 
     // If CTRL + A or CMD + A have been pressed and there are items to select
     if (hasCtrlDownKeyPressed && hasItems) {
       this._canSearch = false;
-      var shouldHightlightAll = this.config.removeItems && !this.input.value && this.input.element === document.activeElement;
+      const shouldHightlightAll = this.config.removeItems && !this.input.value && this.input.element === document.activeElement;
 
       if (shouldHightlightAll) {
         this.highlightAll();
       }
     }
-  };
+  }
 
-  _proto._onEnterKey = function _onEnterKey(_ref4) {
-    var event = _ref4.event,
-        target = _ref4.target,
-        activeItems = _ref4.activeItems,
-        hasActiveDropdown = _ref4.hasActiveDropdown;
-    var enterKey = KEY_CODES.ENTER_KEY;
-    var targetWasButton = target.hasAttribute('data-button');
+  _onEnterKey(_ref4) {
+    let {
+      event,
+      target,
+      activeItems,
+      hasActiveDropdown
+    } = _ref4;
+    const {
+      ENTER_KEY: enterKey
+    } = KEY_CODES;
+    const targetWasButton = target.hasAttribute('data-button');
 
     if (this._isTextElement && target.value) {
-      var value = this.input.value;
+      const {
+        value
+      } = this.input;
 
-      var canAddItem = this._canAddItem(activeItems, value);
+      const canAddItem = this._canAddItem(activeItems, value);
 
       if (canAddItem.response) {
         this.hideDropdown(true);
 
         this._addItem({
-          value: value
+          value
         });
 
         this._triggerChange(value);
@@ -4765,7 +4578,7 @@ function () {
     }
 
     if (hasActiveDropdown) {
-      var highlightedChoice = this.dropdown.getChild("." + this.config.classNames.highlightedState);
+      const highlightedChoice = this.dropdown.getChild(`.${this.config.classNames.highlightedState}`);
 
       if (highlightedChoice) {
         // add enter keyCode value
@@ -4781,42 +4594,48 @@ function () {
       this.showDropdown();
       event.preventDefault();
     }
-  };
+  }
 
-  _proto._onEscapeKey = function _onEscapeKey(_ref5) {
-    var hasActiveDropdown = _ref5.hasActiveDropdown;
+  _onEscapeKey(_ref5) {
+    let {
+      hasActiveDropdown
+    } = _ref5;
 
     if (hasActiveDropdown) {
       this.hideDropdown(true);
       this.containerOuter.focus();
     }
-  };
+  }
 
-  _proto._onDirectionKey = function _onDirectionKey(_ref6) {
-    var event = _ref6.event,
-        hasActiveDropdown = _ref6.hasActiveDropdown,
-        keyCode = _ref6.keyCode,
-        metaKey = _ref6.metaKey;
-    var downKey = KEY_CODES.DOWN_KEY,
-        pageUpKey = KEY_CODES.PAGE_UP_KEY,
-        pageDownKey = KEY_CODES.PAGE_DOWN_KEY; // If up or down key is pressed, traverse through options
+  _onDirectionKey(_ref6) {
+    let {
+      event,
+      hasActiveDropdown,
+      keyCode,
+      metaKey
+    } = _ref6;
+    const {
+      DOWN_KEY: downKey,
+      PAGE_UP_KEY: pageUpKey,
+      PAGE_DOWN_KEY: pageDownKey
+    } = KEY_CODES; // If up or down key is pressed, traverse through options
 
     if (hasActiveDropdown || this._isSelectOneElement) {
       this.showDropdown();
       this._canSearch = false;
-      var directionInt = keyCode === downKey || keyCode === pageDownKey ? 1 : -1;
-      var skipKey = metaKey || keyCode === pageDownKey || keyCode === pageUpKey;
-      var selectableChoiceIdentifier = '[data-choice-selectable]';
-      var nextEl;
+      const directionInt = keyCode === downKey || keyCode === pageDownKey ? 1 : -1;
+      const skipKey = metaKey || keyCode === pageDownKey || keyCode === pageUpKey;
+      const selectableChoiceIdentifier = '[data-choice-selectable]';
+      let nextEl;
 
       if (skipKey) {
         if (directionInt > 0) {
-          nextEl = this.dropdown.element.querySelector(selectableChoiceIdentifier + ":last-of-type");
+          nextEl = this.dropdown.element.querySelector(`${selectableChoiceIdentifier}:last-of-type`);
         } else {
           nextEl = this.dropdown.element.querySelector(selectableChoiceIdentifier);
         }
       } else {
-        var currentEl = this.dropdown.element.querySelector("." + this.config.classNames.highlightedState);
+        const currentEl = this.dropdown.element.querySelector(`.${this.config.classNames.highlightedState}`);
 
         if (currentEl) {
           nextEl = getAdjacentEl(currentEl, selectableChoiceIdentifier, directionInt);
@@ -4839,13 +4658,15 @@ function () {
 
       event.preventDefault();
     }
-  };
+  }
 
-  _proto._onDeleteKey = function _onDeleteKey(_ref7) {
-    var event = _ref7.event,
-        target = _ref7.target,
-        hasFocusedInput = _ref7.hasFocusedInput,
-        activeItems = _ref7.activeItems;
+  _onDeleteKey(_ref7) {
+    let {
+      event,
+      target,
+      hasFocusedInput,
+      activeItems
+    } = _ref7;
 
     // If backspace or delete key is pressed and the input has no value
     if (hasFocusedInput && !target.value && !this._isSelectOneElement) {
@@ -4853,22 +4674,22 @@ function () {
 
       event.preventDefault();
     }
-  };
+  }
 
-  _proto._onTouchMove = function _onTouchMove() {
+  _onTouchMove() {
     if (this._wasTap) {
       this._wasTap = false;
     }
-  };
+  }
 
-  _proto._onTouchEnd = function _onTouchEnd(event) {
-    var _ref8 = event || event.touches[0],
-        target = _ref8.target;
-
-    var touchWasWithinContainer = this._wasTap && this.containerOuter.element.contains(target);
+  _onTouchEnd(event) {
+    const {
+      target
+    } = event || event.touches[0];
+    const touchWasWithinContainer = this._wasTap && this.containerOuter.element.contains(target);
 
     if (touchWasWithinContainer) {
-      var containerWasExactTarget = target === this.containerOuter.element || target === this.containerInner.element;
+      const containerWasExactTarget = target === this.containerOuter.element || target === this.containerInner.element;
 
       if (containerWasExactTarget) {
         if (this._isTextElement) {
@@ -4888,10 +4709,12 @@ function () {
    * Handles mousedown event in capture mode for containetOuter.element
    * @param {MouseEvent} event
    */
-  ;
 
-  _proto._onMouseDown = function _onMouseDown(event) {
-    var target = event.target;
+
+  _onMouseDown(event) {
+    const {
+      target
+    } = event;
 
     if (!(target instanceof HTMLElement)) {
       return;
@@ -4900,10 +4723,10 @@ function () {
 
     if (IS_IE11 && this.choiceList.element.contains(target)) {
       // check if click was on a scrollbar area
-      var firstChoice =
+      const firstChoice =
       /** @type {HTMLElement} */
       this.choiceList.element.firstElementChild;
-      var isOnScrollbar = this._direction === 'ltr' ? event.offsetX >= firstChoice.offsetWidth : event.offsetX < firstChoice.offsetLeft;
+      const isOnScrollbar = this._direction === 'ltr' ? event.offsetX >= firstChoice.offsetWidth : event.offsetX < firstChoice.offsetLeft;
       this._isScrollingOnIe = isOnScrollbar;
     }
 
@@ -4911,12 +4734,16 @@ function () {
       return;
     }
 
-    var item = target.closest('[data-button],[data-item],[data-choice]');
+    const item = target.closest('[data-button],[data-item],[data-choice]');
 
     if (item instanceof HTMLElement) {
-      var hasShiftKey = event.shiftKey;
-      var activeItems = this._store.activeItems;
-      var dataset = item.dataset;
+      const hasShiftKey = event.shiftKey;
+      const {
+        activeItems
+      } = this._store;
+      const {
+        dataset
+      } = item;
 
       if ('button' in dataset) {
         this._handleButtonAction(activeItems, item);
@@ -4933,19 +4760,23 @@ function () {
    * Handles mouseover event over this.dropdown
    * @param {MouseEvent} event
    */
-  ;
 
-  _proto._onMouseOver = function _onMouseOver(_ref9) {
-    var target = _ref9.target;
+
+  _onMouseOver(_ref8) {
+    let {
+      target
+    } = _ref8;
 
     if (target instanceof HTMLElement && 'choice' in target.dataset) {
       this._highlightChoice(target);
     }
-  };
+  }
 
-  _proto._onClick = function _onClick(_ref10) {
-    var target = _ref10.target;
-    var clickWasWithinContainer = this.containerOuter.element.contains(target);
+  _onClick(_ref9) {
+    let {
+      target
+    } = _ref9;
+    const clickWasWithinContainer = this.containerOuter.element.contains(target);
 
     if (clickWasWithinContainer) {
       if (!this.dropdown.isActive && !this.containerOuter.isDisabled) {
@@ -4961,7 +4792,7 @@ function () {
         this.hideDropdown();
       }
     } else {
-      var hasHighlightedItems = this._store.highlightedActiveItems.length > 0;
+      const hasHighlightedItems = this._store.highlightedActiveItems.length > 0;
 
       if (hasHighlightedItems) {
         this.unhighlightAll();
@@ -4970,81 +4801,84 @@ function () {
       this.containerOuter.removeFocusState();
       this.hideDropdown(true);
     }
-  };
+  }
 
-  _proto._onFocus = function _onFocus(_ref11) {
-    var _this17 = this,
-        _focusActions;
-
-    var target = _ref11.target;
-    var focusWasWithinContainer = this.containerOuter.element.contains(target);
+  _onFocus(_ref10) {
+    let {
+      target
+    } = _ref10;
+    const focusWasWithinContainer = this.containerOuter.element.contains(target);
 
     if (!focusWasWithinContainer) {
       return;
     }
 
-    var focusActions = (_focusActions = {}, _focusActions[TEXT_TYPE] = function () {
-      if (target === _this17.input.element) {
-        _this17.containerOuter.addFocusState();
-      }
-    }, _focusActions[SELECT_ONE_TYPE] = function () {
-      _this17.containerOuter.addFocusState();
+    const focusActions = {
+      [TEXT_TYPE]: () => {
+        if (target === this.input.element) {
+          this.containerOuter.addFocusState();
+        }
+      },
+      [SELECT_ONE_TYPE]: () => {
+        this.containerOuter.addFocusState();
 
-      if (target === _this17.input.element) {
-        _this17.showDropdown(true);
-      }
-    }, _focusActions[SELECT_MULTIPLE_TYPE] = function () {
-      if (target === _this17.input.element) {
-        _this17.showDropdown(true); // If element is a select box, the focused element is the container and the dropdown
-        // isn't already open, focus and show dropdown
+        if (target === this.input.element) {
+          this.showDropdown(true);
+        }
+      },
+      [SELECT_MULTIPLE_TYPE]: () => {
+        if (target === this.input.element) {
+          this.showDropdown(true); // If element is a select box, the focused element is the container and the dropdown
+          // isn't already open, focus and show dropdown
 
-
-        _this17.containerOuter.addFocusState();
+          this.containerOuter.addFocusState();
+        }
       }
-    }, _focusActions);
+    };
     focusActions[this.passedElement.element.type]();
-  };
+  }
 
-  _proto._onBlur = function _onBlur(_ref12) {
-    var _this18 = this;
-
-    var target = _ref12.target;
-    var blurWasWithinContainer = this.containerOuter.element.contains(target);
+  _onBlur(_ref11) {
+    let {
+      target
+    } = _ref11;
+    const blurWasWithinContainer = this.containerOuter.element.contains(target);
 
     if (blurWasWithinContainer && !this._isScrollingOnIe) {
-      var _blurActions;
+      const {
+        activeItems
+      } = this._store;
+      const hasHighlightedItems = activeItems.some(item => item.highlighted);
+      const blurActions = {
+        [TEXT_TYPE]: () => {
+          if (target === this.input.element) {
+            this.containerOuter.removeFocusState();
 
-      var activeItems = this._store.activeItems;
-      var hasHighlightedItems = activeItems.some(function (item) {
-        return item.highlighted;
-      });
-      var blurActions = (_blurActions = {}, _blurActions[TEXT_TYPE] = function () {
-        if (target === _this18.input.element) {
-          _this18.containerOuter.removeFocusState();
+            if (hasHighlightedItems) {
+              this.unhighlightAll();
+            }
 
-          if (hasHighlightedItems) {
-            _this18.unhighlightAll();
+            this.hideDropdown(true);
           }
+        },
+        [SELECT_ONE_TYPE]: () => {
+          this.containerOuter.removeFocusState();
 
-          _this18.hideDropdown(true);
-        }
-      }, _blurActions[SELECT_ONE_TYPE] = function () {
-        _this18.containerOuter.removeFocusState();
+          if (target === this.input.element || target === this.containerOuter.element && !this._canSearch) {
+            this.hideDropdown(true);
+          }
+        },
+        [SELECT_MULTIPLE_TYPE]: () => {
+          if (target === this.input.element) {
+            this.containerOuter.removeFocusState();
+            this.hideDropdown(true);
 
-        if (target === _this18.input.element || target === _this18.containerOuter.element && !_this18._canSearch) {
-          _this18.hideDropdown(true);
-        }
-      }, _blurActions[SELECT_MULTIPLE_TYPE] = function () {
-        if (target === _this18.input.element) {
-          _this18.containerOuter.removeFocusState();
-
-          _this18.hideDropdown(true);
-
-          if (hasHighlightedItems) {
-            _this18.unhighlightAll();
+            if (hasHighlightedItems) {
+              this.unhighlightAll();
+            }
           }
         }
-      }, _blurActions);
+      };
       blurActions[this.passedElement.element.type]();
     } else {
       // On IE11, clicking the scollbar blurs our input and thus
@@ -5053,30 +4887,28 @@ function () {
       this._isScrollingOnIe = false;
       this.input.element.focus();
     }
-  };
+  }
 
-  _proto._onFormReset = function _onFormReset() {
+  _onFormReset() {
     this._store.dispatch(resetTo(this._initialState));
-  };
+  }
 
-  _proto._highlightChoice = function _highlightChoice(el) {
-    var _this19 = this;
-
+  _highlightChoice(el) {
     if (el === void 0) {
       el = null;
     }
 
-    var choices = Array.from(this.dropdown.element.querySelectorAll('[data-choice-selectable]'));
+    const choices = Array.from(this.dropdown.element.querySelectorAll('[data-choice-selectable]'));
 
     if (!choices.length) {
       return;
     }
 
-    var passedEl = el;
-    var highlightedChoices = Array.from(this.dropdown.element.querySelectorAll("." + this.config.classNames.highlightedState)); // Remove any highlighted choices
+    let passedEl = el;
+    const highlightedChoices = Array.from(this.dropdown.element.querySelectorAll(`.${this.config.classNames.highlightedState}`)); // Remove any highlighted choices
 
-    highlightedChoices.forEach(function (choice) {
-      choice.classList.remove(_this19.config.classNames.highlightedState);
+    highlightedChoices.forEach(choice => {
+      choice.classList.remove(this.config.classNames.highlightedState);
       choice.setAttribute('aria-selected', 'false');
     });
 
@@ -5109,30 +4941,28 @@ function () {
       this.input.setActiveDescendant(passedEl.id);
       this.containerOuter.setActiveDescendant(passedEl.id);
     }
-  };
+  }
 
-  _proto._addItem = function _addItem(_ref13) {
-    var value = _ref13.value,
-        _ref13$label = _ref13.label,
-        label = _ref13$label === void 0 ? null : _ref13$label,
-        _ref13$choiceId = _ref13.choiceId,
-        choiceId = _ref13$choiceId === void 0 ? -1 : _ref13$choiceId,
-        _ref13$groupId = _ref13.groupId,
-        groupId = _ref13$groupId === void 0 ? -1 : _ref13$groupId,
-        _ref13$customProperti = _ref13.customProperties,
-        customProperties = _ref13$customProperti === void 0 ? null : _ref13$customProperti,
-        _ref13$placeholder = _ref13.placeholder,
-        placeholder = _ref13$placeholder === void 0 ? false : _ref13$placeholder,
-        _ref13$keyCode = _ref13.keyCode,
-        keyCode = _ref13$keyCode === void 0 ? null : _ref13$keyCode;
-    var passedValue = typeof value === 'string' ? value.trim() : value;
-    var passedKeyCode = keyCode;
-    var passedCustomProperties = customProperties;
-    var items = this._store.items;
-    var passedLabel = label || passedValue;
-    var passedOptionId = choiceId || -1;
-    var group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
-    var id = items ? items.length + 1 : 1; // If a prepended value has been passed, prepend it
+  _addItem(_ref12) {
+    let {
+      value,
+      label = null,
+      choiceId = -1,
+      groupId = -1,
+      customProperties = null,
+      placeholder = false,
+      keyCode = null
+    } = _ref12;
+    let passedValue = typeof value === 'string' ? value.trim() : value;
+    const passedKeyCode = keyCode;
+    const passedCustomProperties = customProperties;
+    const {
+      items
+    } = this._store;
+    const passedLabel = label || passedValue;
+    const passedOptionId = choiceId || -1;
+    const group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
+    const id = items ? items.length + 1 : 1; // If a prepended value has been passed, prepend it
 
     if (this.config.prependValue) {
       passedValue = this.config.prependValue + passedValue.toString();
@@ -5143,14 +4973,14 @@ function () {
       passedValue += this.config.appendValue.toString();
     }
 
-    this._store.dispatch(items_addItem({
+    this._store.dispatch(addItem({
       value: passedValue,
       label: passedLabel,
-      id: id,
+      id,
       choiceId: passedOptionId,
-      groupId: groupId,
-      customProperties: customProperties,
-      placeholder: placeholder,
+      groupId,
+      customProperties,
+      placeholder,
       keyCode: passedKeyCode
     }));
 
@@ -5160,7 +4990,7 @@ function () {
 
 
     this.passedElement.triggerEvent(EVENTS.addItem, {
-      id: id,
+      id,
       value: passedValue,
       label: passedLabel,
       customProperties: passedCustomProperties,
@@ -5168,121 +4998,118 @@ function () {
       keyCode: passedKeyCode
     });
     return this;
-  };
+  }
 
-  _proto._removeItem = function _removeItem(item) {
+  _removeItem(item) {
     if (!item || !isType('Object', item)) {
       return this;
     }
 
-    var id = item.id,
-        value = item.value,
-        label = item.label,
-        choiceId = item.choiceId,
-        groupId = item.groupId;
-    var group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
+    const {
+      id,
+      value,
+      label,
+      choiceId,
+      groupId
+    } = item;
+    const group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
 
-    this._store.dispatch(items_removeItem(id, choiceId));
+    this._store.dispatch(removeItem(id, choiceId));
 
     if (group && group.value) {
       this.passedElement.triggerEvent(EVENTS.removeItem, {
-        id: id,
-        value: value,
-        label: label,
+        id,
+        value,
+        label,
         groupValue: group.value
       });
     } else {
       this.passedElement.triggerEvent(EVENTS.removeItem, {
-        id: id,
-        value: value,
-        label: label
+        id,
+        value,
+        label
       });
     }
 
     return this;
-  };
+  }
 
-  _proto._addChoice = function _addChoice(_ref14) {
-    var value = _ref14.value,
-        _ref14$label = _ref14.label,
-        label = _ref14$label === void 0 ? null : _ref14$label,
-        _ref14$isSelected = _ref14.isSelected,
-        isSelected = _ref14$isSelected === void 0 ? false : _ref14$isSelected,
-        _ref14$isDisabled = _ref14.isDisabled,
-        isDisabled = _ref14$isDisabled === void 0 ? false : _ref14$isDisabled,
-        _ref14$groupId = _ref14.groupId,
-        groupId = _ref14$groupId === void 0 ? -1 : _ref14$groupId,
-        _ref14$customProperti = _ref14.customProperties,
-        customProperties = _ref14$customProperti === void 0 ? null : _ref14$customProperti,
-        _ref14$placeholder = _ref14.placeholder,
-        placeholder = _ref14$placeholder === void 0 ? false : _ref14$placeholder,
-        _ref14$keyCode = _ref14.keyCode,
-        keyCode = _ref14$keyCode === void 0 ? null : _ref14$keyCode;
+  _addChoice(_ref13) {
+    let {
+      value,
+      label = null,
+      isSelected = false,
+      isDisabled = false,
+      groupId = -1,
+      customProperties = null,
+      placeholder = false,
+      keyCode = null
+    } = _ref13;
 
     if (typeof value === 'undefined' || value === null) {
       return;
     } // Generate unique id
 
 
-    var choices = this._store.choices;
-    var choiceLabel = label || value;
-    var choiceId = choices ? choices.length + 1 : 1;
-    var choiceElementId = this._baseId + "-" + this._idNames.itemChoice + "-" + choiceId;
+    const {
+      choices
+    } = this._store;
+    const choiceLabel = label || value;
+    const choiceId = choices ? choices.length + 1 : 1;
+    const choiceElementId = `${this._baseId}-${this._idNames.itemChoice}-${choiceId}`;
 
-    this._store.dispatch(choices_addChoice({
+    this._store.dispatch(addChoice({
       id: choiceId,
-      groupId: groupId,
+      groupId,
       elementId: choiceElementId,
-      value: value,
+      value,
       label: choiceLabel,
       disabled: isDisabled,
-      customProperties: customProperties,
-      placeholder: placeholder,
-      keyCode: keyCode
+      customProperties,
+      placeholder,
+      keyCode
     }));
 
     if (isSelected) {
       this._addItem({
-        value: value,
+        value,
         label: choiceLabel,
-        choiceId: choiceId,
-        customProperties: customProperties,
-        placeholder: placeholder,
-        keyCode: keyCode
+        choiceId,
+        customProperties,
+        placeholder,
+        keyCode
       });
     }
-  };
+  }
 
-  _proto._addGroup = function _addGroup(_ref15) {
-    var _this20 = this;
-
-    var group = _ref15.group,
-        id = _ref15.id,
-        _ref15$valueKey = _ref15.valueKey,
-        valueKey = _ref15$valueKey === void 0 ? 'value' : _ref15$valueKey,
-        _ref15$labelKey = _ref15.labelKey,
-        labelKey = _ref15$labelKey === void 0 ? 'label' : _ref15$labelKey;
-    var groupChoices = isType('Object', group) ? group.choices : Array.from(group.getElementsByTagName('OPTION'));
-    var groupId = id || Math.floor(new Date().valueOf() * Math.random());
-    var isDisabled = group.disabled ? group.disabled : false;
+  _addGroup(_ref14) {
+    let {
+      group,
+      id,
+      valueKey = 'value',
+      labelKey = 'label'
+    } = _ref14;
+    const groupChoices = isType('Object', group) ? group.choices : Array.from(group.getElementsByTagName('OPTION'));
+    const groupId = id || Math.floor(new Date().valueOf() * Math.random());
+    const isDisabled = group.disabled ? group.disabled : false;
 
     if (groupChoices) {
-      this._store.dispatch(groups_addGroup({
+      this._store.dispatch(addGroup({
         value: group.label,
         id: groupId,
         active: true,
         disabled: isDisabled
       }));
 
-      var addGroupChoices = function addGroupChoices(choice) {
-        var isOptDisabled = choice.disabled || choice.parentNode && choice.parentNode.disabled;
+      const addGroupChoices = choice => {
+        const isOptDisabled = choice.disabled || choice.parentNode && choice.parentNode.disabled;
 
-        _this20._addChoice({
+        this._addChoice({
           value: choice[valueKey],
           label: isType('Object', choice) ? choice[labelKey] : choice.innerHTML,
           isSelected: choice.selected,
           isDisabled: isOptDisabled,
-          groupId: groupId,
+          groupId,
           customProperties: choice.customProperties,
           placeholder: choice.placeholder
         });
@@ -5290,43 +5117,45 @@ function () {
 
       groupChoices.forEach(addGroupChoices);
     } else {
-      this._store.dispatch(groups_addGroup({
+      this._store.dispatch(addGroup({
         value: group.label,
         id: group.id,
         active: false,
         disabled: group.disabled
       }));
     }
-  };
+  }
 
-  _proto._getTemplate = function _getTemplate(template) {
-    var _this$_templates$temp;
-
+  _getTemplate(template) {
     if (!template) {
       return null;
     }
 
-    var classNames = this.config.classNames;
+    const {
+      classNames
+    } = this.config;
 
     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
 
-    return (_this$_templates$temp = this._templates[template]).call.apply(_this$_templates$temp, [this, classNames].concat(args));
-  };
+    return this._templates[template].call(this, classNames, ...args);
+  }
 
-  _proto._createTemplates = function _createTemplates() {
-    var callbackOnCreateTemplates = this.config.callbackOnCreateTemplates;
-    var userTemplates = {};
+  _createTemplates() {
+    const {
+      callbackOnCreateTemplates
+    } = this.config;
+    let userTemplates = {};
 
     if (callbackOnCreateTemplates && typeof callbackOnCreateTemplates === 'function') {
       userTemplates = callbackOnCreateTemplates.call(this, strToEl);
     }
 
     this._templates = cjs_default()(TEMPLATES, userTemplates);
-  };
+  }
 
-  _proto._createElements = function _createElements() {
+  _createElements() {
     this.containerOuter = new container_Container({
       element: this._getTemplate('containerOuter', this._direction, this._isSelectElement, this._isSelectOneElement, this.config.searchEnabled, this.passedElement.element.type),
       classNames: this.config.classNames,
@@ -5356,9 +5185,9 @@ function () {
       classNames: this.config.classNames,
       type: this.passedElement.element.type
     });
-  };
+  }
 
-  _proto._createStructure = function _createStructure() {
+  _createStructure() {
     // Hide original element
     this.passedElement.conceal(); // Wrap input in container preserving DOM ordering
 
@@ -5405,13 +5234,11 @@ function () {
     if (this._isTextElement) {
       this._addPredefinedItems(this._presetItems);
     }
-  };
+  }
 
-  _proto._addPredefinedGroups = function _addPredefinedGroups(groups) {
-    var _this21 = this;
-
+  _addPredefinedGroups(groups) {
     // If we have a placeholder option
-    var placeholderChoice = this.passedElement.placeholderOption;
+    const placeholderChoice = this.passedElement.placeholderOption;
 
     if (placeholderChoice && placeholderChoice.parentNode.tagName === 'SELECT') {
       this._addChoice({
@@ -5423,38 +5250,32 @@ function () {
       });
     }
 
-    groups.forEach(function (group) {
-      return _this21._addGroup({
-        group: group,
-        id: group.id || null
-      });
-    });
-  };
+    groups.forEach(group => this._addGroup({
+      group,
+      id: group.id || null
+    }));
+  }
 
-  _proto._addPredefinedChoices = function _addPredefinedChoices(choices) {
-    var _this22 = this;
-
+  _addPredefinedChoices(choices) {
     // If sorting is enabled or the user is searching, filter choices
     if (this.config.shouldSort) {
       choices.sort(this.config.sorter);
     }
 
-    var hasSelectedChoice = choices.some(function (choice) {
-      return choice.selected;
-    });
-    var firstEnabledChoiceIndex = choices.findIndex(function (choice) {
-      return choice.disabled === undefined || !choice.disabled;
-    });
-    choices.forEach(function (choice, index) {
-      var value = choice.value,
-          label = choice.label,
-          customProperties = choice.customProperties,
-          placeholder = choice.placeholder;
+    const hasSelectedChoice = choices.some(choice => choice.selected);
+    const firstEnabledChoiceIndex = choices.findIndex(choice => choice.disabled === undefined || !choice.disabled);
+    choices.forEach((choice, index) => {
+      const {
+        value,
+        label,
+        customProperties,
+        placeholder
+      } = choice;
 
-      if (_this22._isSelectElement) {
+      if (this._isSelectElement) {
         // If the choice is actually a group
         if (choice.choices) {
-          _this22._addGroup({
+          this._addGroup({
             group: choice,
             id: choice.id || null
           });
@@ -5465,27 +5286,27 @@ function () {
            *
            * Otherwise we pre-select the first enabled choice in the array ("select-one" only)
            */
-          var shouldPreselect = _this22._isSelectOneElement && !hasSelectedChoice && index === firstEnabledChoiceIndex;
-          var isSelected = shouldPreselect ? true : choice.selected;
-          var isDisabled = choice.disabled;
+          const shouldPreselect = this._isSelectOneElement && !hasSelectedChoice && index === firstEnabledChoiceIndex;
+          const isSelected = shouldPreselect ? true : choice.selected;
+          const isDisabled = choice.disabled;
 
-          _this22._addChoice({
-            value: value,
-            label: label,
-            isSelected: isSelected,
-            isDisabled: isDisabled,
-            customProperties: customProperties,
-            placeholder: placeholder
+          this._addChoice({
+            value,
+            label,
+            isSelected,
+            isDisabled,
+            customProperties,
+            placeholder
           });
         }
       } else {
-        _this22._addChoice({
-          value: value,
-          label: label,
+        this._addChoice({
+          value,
+          label,
           isSelected: choice.selected,
           isDisabled: choice.disabled,
-          customProperties: customProperties,
-          placeholder: placeholder
+          customProperties,
+          placeholder
         });
       }
     });
@@ -5493,14 +5314,12 @@ function () {
   /**
    * @param {Item[]} items
    */
-  ;
 
-  _proto._addPredefinedItems = function _addPredefinedItems(items) {
-    var _this23 = this;
 
-    items.forEach(function (item) {
+  _addPredefinedItems(items) {
+    items.forEach(item => {
       if (typeof item === 'object' && item.value) {
-        _this23._addItem({
+        this._addItem({
           value: item.value,
           label: item.label,
           choiceId: item.id,
@@ -5510,27 +5329,25 @@ function () {
       }
 
       if (typeof item === 'string') {
-        _this23._addItem({
+        this._addItem({
           value: item
         });
       }
     });
-  };
+  }
 
-  _proto._setChoiceOrItem = function _setChoiceOrItem(item) {
-    var _this24 = this;
-
-    var itemType = getType(item).toLowerCase();
-    var handleType = {
-      object: function object() {
+  _setChoiceOrItem(item) {
+    const itemType = getType(item).toLowerCase();
+    const handleType = {
+      object: () => {
         if (!item.value) {
           return;
         } // If we are dealing with a select input, we need to create an option first
         // that is then selected. For text inputs we can just add items normally.
 
 
-        if (!_this24._isTextElement) {
-          _this24._addChoice({
+        if (!this._isTextElement) {
+          this._addChoice({
             value: item.value,
             label: item.label,
             isSelected: true,
@@ -5539,7 +5356,7 @@ function () {
             placeholder: item.placeholder
           });
         } else {
-          _this24._addItem({
+          this._addItem({
             value: item.value,
             label: item.label,
             choiceId: item.id,
@@ -5548,32 +5365,30 @@ function () {
           });
         }
       },
-      string: function string() {
-        if (!_this24._isTextElement) {
-          _this24._addChoice({
+      string: () => {
+        if (!this._isTextElement) {
+          this._addChoice({
             value: item,
             label: item,
             isSelected: true,
             isDisabled: false
           });
         } else {
-          _this24._addItem({
+          this._addItem({
             value: item
           });
         }
       }
     };
     handleType[itemType]();
-  };
+  }
 
-  _proto._findAndSelectChoiceByValue = function _findAndSelectChoiceByValue(val) {
-    var _this25 = this;
+  _findAndSelectChoiceByValue(val) {
+    const {
+      choices
+    } = this._store; // Check 'value' property exists and the choice isn't already selected
 
-    var choices = this._store.choices; // Check 'value' property exists and the choice isn't already selected
-
-    var foundChoice = choices.find(function (choice) {
-      return _this25.config.valueComparer(choice.value, val);
-    });
+    const foundChoice = choices.find(choice => this.config.valueComparer(choice.value, val));
 
     if (foundChoice && !foundChoice.selected) {
       this._addItem({
@@ -5586,18 +5401,25 @@ function () {
         keyCode: foundChoice.keyCode
       });
     }
-  };
+  }
 
-  _proto._generatePlaceholderValue = function _generatePlaceholderValue() {
+  _generatePlaceholderValue() {
     if (this._isSelectElement) {
-      var placeholderOption = this.passedElement.placeholderOption;
+      const {
+        placeholderOption
+      } = this.passedElement;
       return placeholderOption ? placeholderOption.text : false;
     }
 
-    var _this$config4 = this.config,
-        placeholder = _this$config4.placeholder,
-        placeholderValue = _this$config4.placeholderValue;
-    var dataset = this.passedElement.element.dataset;
+    const {
+      placeholder,
+      placeholderValue
+    } = this.config;
+    const {
+      element: {
+        dataset
+      }
+    } = this.passedElement;
 
     if (placeholder) {
       if (placeholderValue) {
@@ -5610,10 +5432,9 @@ function () {
     }
 
     return false;
-  };
+  }
 
-  return Choices;
-}();
+}
 
 /* harmony default export */ var scripts_choices = __webpack_exports__["default"] = (choices_Choices);
 

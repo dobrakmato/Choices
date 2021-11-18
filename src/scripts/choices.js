@@ -198,13 +198,19 @@ class Choices {
     // Create array of choices from option elements
     if (this.passedElement.options) {
       this.passedElement.options.forEach(o => {
+        let pomCustomProperties = o.getAttribute('data-custom-properties');
+        try {
+          pomCustomProperties = JSON.parse(pomCustomProperties);
+        } catch (e) {
+          /* empty */
+        }
         this._presetChoices.push({
           value: o.value,
           label: o.innerHTML,
           selected: o.selected,
           disabled: o.disabled || o.parentNode.disabled,
           placeholder: o.value === '' || o.hasAttribute('placeholder'),
-          customProperties: o.getAttribute('data-custom-properties'),
+          customProperties: pomCustomProperties,
         });
       });
     }
