@@ -1,5 +1,16 @@
 {
-  "presets": [["@babel/preset-env", { "loose": true }]],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "chrome": "58",
+          "ie": "11",
+          "safari": "9"
+        }
+      }
+    ]
+  ],
   "env": {
     "test": {
       "presets": [
